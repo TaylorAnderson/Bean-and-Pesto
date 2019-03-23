@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - Enemy
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - 
+  - 
+  - PostProcessing
+  - Ship
+  - Dialogue
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: BG
+    uniqueID: 1053298503
+    locked: 0
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: Characters
+    uniqueID: 3660410789
+    locked: 0
+  - name: Ships
+    uniqueID: 1689439211
+    locked: 0
+  - name: Bullets
+    uniqueID: 2396273025
+    locked: 0

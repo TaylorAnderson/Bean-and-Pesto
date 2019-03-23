@@ -1,0 +1,460 @@
+<pre>
+    <head>
+        <title>Super Save Loader Documentation</title>
+        <link rel="shortcut icon" type="image/png" href="/SSLDocImages/favicon.png"/>
+    </head>
+    <style>
+    * {
+        box-sizing:border-box;
+    }
+    body {
+        background-color: #000000; 
+        background-image: url("SSLDocImages/background.png");
+        background-repeat: no-repeat;
+        background-position: center top;
+        background-attachment: fixed;
+        background-size: 100% 100%;
+        font-family: "Trebuchet MS", Helvetica, sans-serif;
+        color: #000000;
+        padding:0 15px;
+    }
+    a {
+        color: #FF0000;
+        font-weight: bold;
+    }
+    pre {
+        font-family: "courier new", courier, monospace;
+        font-size: 14px;
+        font-weight: bold;
+    }
+    code {
+        font-family: "courier new", courier, monospace;
+        font-size: 14px;
+        font-weight: bold;
+    }
+    .column{
+        background-color: #FFFFFF;
+        width: 100%;
+        max-width:1200px;
+        margin:30px auto;
+        padding: 15px;
+    }
+    .banner {
+        text-align: center;
+        max-width: 100%;
+        color: #000000;
+    }
+    .banner img {
+        max-width: 100%;
+    }
+    .tableofcontents {
+        background-color: #DDDDDD;
+        max-width: 50%;
+        padding: 15px;
+        margin: 15px;
+    }
+    .textarea {
+        margin: 50px 50px;
+    }
+    .rightbox {
+        color: #444444;
+        text-align: center;
+        font-style: italic;
+        float: right;
+        background-color: #DDDDDD;
+        padding: 15px;
+        margin: 0px 0px 0px 15px;
+        max-width: 33%;
+    }
+    .rightbox img {
+        width: 100%;
+    }
+    h1 {
+        font-weight: bold;
+        font-size: 32px;
+        text-decoration: underline;
+    }
+    h2 {
+        font-weight: bold;
+        font-size: 28px;
+        text-decoration: underline;
+    }
+    h3 {
+        font-weight: bold;
+        font-size: 20px;
+        text-decoration: underline;
+    }
+    h4 {
+        font-weight: bold;
+        font-size: 16px;
+        text-decoration: underline;
+    }
+    hr {
+        border-top: 2px solid #3c2707;
+        border-bottom: 2px solid #3c2707;
+        border-left: 2px solid #3c2707;
+        border-right: 2px solid #3c2707;
+    }
+    
+    /* Mobiley Styley */
+    
+    @media only screen and (max-width: 1000px) { 
+    
+        .tableofcontents {
+            max-width:100%;
+        }
+    
+    }
+    
+    @media only screen and (max-width: 640px) { 
+    
+        .textarea {
+            margin:15px;
+            word-break:break-word;
+        }
+        .rightbox {
+            float:none;
+            max-width:100%;
+            margin:0 0 15px;
+            padding:5px;
+        }
+        ul{
+            padding-left:0;
+            list-style-type:none;
+        }
+        ol {
+            padding-left:15px;
+        }
+        ul ul, ol ul {
+            padding-left:20px;
+            list-style-type:disc;
+        }
+    
+    }
+    </style></pre>
+    
+    <p><br>
+    <br>
+    <br>
+    <article class="column"><article class="banner">
+    <img src="SSLDocImages/banner.png"/><br>
+    <br>
+    Super Save Loader Documentation - v2.1
+    </article><article class="tableofcontents"><article class="textarea"></p>
+    
+    <h1>Table of Contents</h1>
+    
+    <p><a href="#Features">Features</a></p>
+    
+    <ol>
+    <li><a href="#Adding Super Save Loader to Unity">Adding Super Save Loader to Unity</a></li>
+    <li><a href="#Getting Started">Getting Started</a>
+    <ul><li><a href="#Intro to Saving &amp; Loading">Intro to Saving &amp; Loading</a></li>
+    <li><a href="#Attributes">Attributes</a></li>
+    <li><a href="#Tipes &amp; Tricks">Tips &amp; Tricks</a></li></ul></li>
+    <li><a href="#Functions">Functions</a></li>
+    </ol>
+    
+    <p><a href="#Notes">Notes</a>
+    <a href="#ChangeLog">ChangeLog</a>
+    <a href="#Credits">Credits</a>
+    </article></article><article class="textarea"></p>
+    
+    <hr />
+    
+    <p><a name="Features"></a></p>
+    
+    <h1>Features</h1>
+    
+    <ul>
+    <li>Super Save Loader is an asset that simplifies saving and loading in games.</li>
+    <li>Single-line saving &amp; loading.</li>
+    <li>Able to save any serializable object.</li>
+    <li>Save strings as .txt files and save Texture2Ds as .png or .jpeg files.</li>
+    <li>Can load save data from other games, or see if other save data exists on a device.</li>
+    <li>Files can be automatically obfuscated to discourage tampering with save data.</li>
+    <li>Multiplatform support!</li>
+    <li>Super-fast saving and loading, both with and without encryption.</li>
+    </ul>
+    
+    <hr />
+    
+    <p><a name="Adding Super Save Loader to Unity"></a></p>
+    
+    <h1>1. Adding Super Save Loader to Unity</h1>
+    
+    <p>To import Super Save Loader into your project, either drag in the .unitypackage file, or get it from the asset store window.</p>
+    
+    <h3>Imported folders, what they do, and if you need to import them or not, alphabetically:</h3>
+    
+    <ul>
+    <li><strong>"Documentation"</strong> contains these docs! You don't need to import them, but you probably should!</li>
+    <li><strong>"Example"</strong> contains the demo scene. Not needed if you don't want the demo.</li>
+    </ul>
+    
+    <p>The rest of the files are required.</p>
+    
+    <hr />
+    
+    <p><a name="Getting Started"></a></p>
+    
+    <h1>2. Getting Started</h1>
+    
+    <p><a name="Intro to Saving &amp; Loading"></a></p>
+    
+    <h1>a. Intro to Saving &amp; Loading</h1>
+    
+    <p>For the following examples on saving, I will be using the JSON serializer. To use the XML serializer, just replace "JSON" with "XML" in your code!</p>
+    
+    <ul>
+    <li><h3>How to save</h3>
+    
+    <p>This line of code tells Super Save Loader to save an object named "myObject" as "savedobject.save" without using encryption:</p>
+    
+    <p><code>SSL.SaveJSON(myObject, "savedobject.save", false);</code></p>
+    
+    <p>This line of code is a shorthand for the above one, saving without encryption:</p>
+    
+    <p><code>SSL.SaveJSON(myObject, "savedobject.save");</code></p></li>
+    <li><h3>How to load</h3>
+    
+    <p>There are two ways to load objects, either as a new object, or as an overwrite to old ones. Code to overwrite an object named "myObject" from a file named "savedobject.json" would look like this:</p>
+    
+    <p><code>SSL.LoadJSON(ref myObject, "savedobject.json", false);</code></p>
+    
+    <p>While the code for creating a new object would look like this:</p>
+    
+    <p><code>MyObjectType myObject = SSL.LoadJSON&lt;MyObjectType&gt;("savedobject.json", false);</code></p>
+    
+    <p>The boolean at the end controls whether encryption is used or not, and a shorthand like the one above for saving works for loading, too.</p></li>
+    <li><h3>How to load data from other games</h3>
+    
+    <p>To load data from other games, you have to provide the Developer Name and the Product Name. These will be the names of the folders within the <a href="https://docs.unity3d.com/ScriptReference/Application-persistentDataPath.html">appdata folder or equivalent</a>. For example, if you were to download my game "Hotel Paradise", my Developer Name is "KaiClavier" and my Product Name is "HotelParadise", so the folder route would be <code>[appdata folder/KaiClavier/HotelParadise/]</code>. You can find the developer and product names of a game this way.</p>
+    
+    <p>The functions to load are the same, just with two extra strings for the developer name and product name, respectively.</p>
+    
+    <p><code>SSL.LoadJSON(ref myObject, "savedobject.json", "KaiClavier", "HotelParadise", false);</code></p>
+    
+    <p>If you're loading from another game on Android, you also need to provide the "bundle identifier". This can be left out if your project isn't on Android.</p>
+    
+    <p><code>SSL.LoadJSON(ref myObject, "savedobject.json", "KaiClavier", "HotelParadise", "my.bundle.identifier", false);</code></p>
+    
+    <p>You can still load obfuscated data from other games!</p>
+    
+    <p><a name="Attributes"></a></p>
+    
+    <h1>b. Attributes</h1>
+    
+    <p>To serialize custom objects, you <strong>need to use attributes!</strong> Attributes (also called "sub properties") are those lines of text between brackets like <code>[this]</code>. To use them, place them before a class/variable, either in the previous or same line. Also, if applicable, attributes can be stacked!</p>
+    
+    <p><code>
+    [System.Serializable] &lt;= This attribute is required for it to be saved! You need to use this on custom classes! <br />
+    public class MyObject{ <br />
+    &nbsp;int foo; <br />
+    &nbsp;[System.NonSerialized] float bar; &lt;= This attribute means "bar" will be excluded from being saved with MyObject <br />
+    }
+    </code></p>
+    
+    <p>The following attributes are to make XML code look cleaner. You only need to use them if you're picky about files no one will see.</p>
+    
+    <p><code>
+    using System.Xml.Serialization; &lt;= Put this at the top of your script to use these attributes.  </p>
+    
+    <p>[System.Serializable] <br />
+    [XmlRoot("GameData")] &lt;= Renames root class in the XML file to "Game"! <br />
+    public class MyObject{ &lt;= By default, "MyObject" would be the root class instead. <br />
+    &nbsp;int foo; <br />
+    &nbsp;[XmlAttribute("extra")] &lt;= Changes the name of "bar" to "extra" in the XML file! <br />
+    &nbsp;float bar; <br />
+    } <br />
+    </code></p>
+    
+    <p>You cannot use [XmlAttribute("myLabel")] on Lists, Arrays, Vector3s, or any other class that contains more than one variable. It won't work, and it'll return an error.</p></li>
+    </ul>
+    
+    <p><a name="Tips &amp; Tricks"></a></p>
+    
+    <h1>c. Tips &amp; Tricks</h1>
+    
+    <ul>
+    <li><h3>How do I set my company name and product name?</h3>
+    
+    <p>To set Product Name &amp; Company Name for your game:
+    Go to <code>[Edit &gt; Project Settings &gt; Player]</code>, and they're the top two things in the inspector!</p>
+    
+    <p>To set the Bundle Identifier: (for mobile games)
+    Go to <code>[Edit &gt; Project Settings &gt; Player]</code>, then click on Android or iOS, then look for "Bundle Identifier"!</p></li>
+    <li><h3>Saving PNGs</h3>
+    
+    <p>Make sure the textures you want to save are read/write enabled. Textures may also save improperly if mipmapping is enabled or transparency is disabled.</p></li>
+    <li><h3>Loading TXTs</h3>
+    
+    <p>LoadTXT() can be used on non-txt files to get them as a string! Try it out with JSON or XML files.</p></li>
+    <li><h3>Custom Extentions</h3>
+    
+    <p>Files dont have to end with .json or .txt, you can give them a made-up extention like .save or .playerdata</p></li>
+    <li><h3>Subfolders</h3>
+    
+    <p>If you include forward slashes in your filename ("mysubfolder/anotherfolder/file.txt"), your files can be sorted into folders within the persistent data folder!</p></li>
+    <li><h3>Where is data actually saved to?</h3>
+    
+    <p><a href="https://docs.unity3d.com/ScriptReference/Application-persistentDataPath.html">You can check out where SSL is saving your files here!</a> When specifying a filename in all functions, the filename refers to a file local to this folder.</p></li>
+    </ul>
+    
+    <hr />
+    
+    <p><a name="Functions"></a></p>
+    
+    <h1>3. Functions</h1>
+    
+    <ul>
+    <li><h3>void SSL.SaveJSON(T object, string fileName);</h3></li>
+    <li><h3>void SSL.SaveJSON(T object, string fileName, bool obfuscate);</h3>
+    
+    <p>Save an object as JSON.</p></li>
+    <li><h3>void SSL.LoadJSON(ref T object, string fileName);</h3></li>
+    <li><h3>void SSL.LoadJSON(ref T object, string fileName, bool obfuscate);</h3></li>
+    <li><h3>void SSL.LoadJSON(ref T object, string fileName, string devName, string gameName, bool obfuscate);</h3></li>
+    <li><h3>void SSL.LoadJSON(ref T object, string fileName, string devName, string gameName, string bundleIdentifier, bool obfuscate);</h3>
+    
+    <p>Overwrite an object from a JSON file.</p></li>
+    <li><h3>T SSL.LoadJSON<T>(string fileName);</h3></li>
+    <li><h3>T SSL.LoadJSON<T>(string fileName, bool obfuscate);</h3></li>
+    <li><h3>T SSL.LoadJSON<T>(string fileName, string devName, string gameName, bool obfuscate);</h3></li>
+    <li><h3>T SSL.LoadJSON<T>(string fileName, string devName, string gameName, string bundleIdentifier, bool obfuscate);</h3>
+    
+    <p>Create a new object from a JSON file.</p></li>
+    <li><h3>void SSL.SaveXML(T object, string fileName);</h3></li>
+    <li><h3>void SSL.SaveXML(T object, string fileName, bool obfuscate);</h3>
+    
+    <p>Save an object as XML.</p></li>
+    <li><h3>void SSL.LoadXML(ref T object, string fileName);</h3></li>
+    <li><h3>void SSL.LoadXML(ref T object, string fileName, bool obfuscate);</h3></li>
+    <li><h3>void SSL.LoadXML(ref T object, string fileName, string devName, string gameName, bool obfuscate);</h3></li>
+    <li><h3>void SSL.LoadXML(ref T object, string fileName, string devName, string gameName, string bundleIdentifier, bool obfuscate);</h3>
+    
+    <p>Overwrite an object from a XML file.</p></li>
+    <li><h3>T SSL.LoadXML<T>(string fileName);</h3></li>
+    <li><h3>T SSL.LoadXML<T>(string fileName, bool obfuscate);</h3></li>
+    <li><h3>T SSL.LoadXML<T>(string fileName, string devName, string gameName, bool obfuscate);</h3></li>
+    <li><h3>T SSL.LoadXML<T>(string fileName, string devName, string gameName, string bundleIdentifier, bool obfuscate);</h3>
+    
+    <p>Create a new object from a XML file.</p></li>
+    <li><h3>void SSL.SaveTXT(string saveThis, string fileName);</h3></li>
+    <li><h3>void SSL.SaveTXT(string saveThis, string fileName, bool obfuscate);</h3>
+    
+    <p>Save a string as a TXT file.</p></li>
+    <li><h3>string SSL.LoadTXT(string fileName);</h3></li>
+    <li><h3>string SSL.LoadTXT(string fileName, bool obfuscate);</h3></li>
+    <li><h3>string SSL.LoadTXT(string fileName, string devName, string gameName, bool obfuscate);</h3></li>
+    <li><h3>string SSL.LoadTXT(string fileName, string devName, string gameName, string bundleIdentifier, bool obfuscate);</h3>
+    
+    <p>Return a TXT file as a string, or read any file as a string.</p></li>
+    <li><h3>void SSL.SavePNG(Texture2D saveThis, string fileName);</h3></li>
+    <li><h3>void SSL.SavePNG(Texture2D saveThis, string fileName, bool obfuscate);</h3>
+    
+    <p>Save a Texture2D as a PNG. Be wary of quality.</p></li>
+    <li><h3>void SSL.SaveJPEG(Texture2D saveThis, int quality, string fileName);</h3></li>
+    <li><h3>void SSL.SaveJPEG(Texture2D saveThis, int quality, string fileName, bool obfuscate);</h3>
+    
+    <p>Save a Texture2D as a JPEG. Can control JPEG compression levels with the quality integer, which goes from 0 to 100.</p></li>
+    <li><h3>Texture2D SSL.LoadPNG(string fileName, bool obfuscate);</h3></li>
+    <li><h3>Texture2D SSL.LoadPNG(string fileName, string devName, string gameName, bool obfuscate);</h3></li>
+    <li><h3>Texture2D SSL.LoadPNG(string fileName, string devName, string gameName, string bundleIdentifier, bool obfuscate);</h3></li>
+    <li><h3>Texture2D SSL.LoadJPEG(string fileName, bool obfuscate);</h3></li>
+    <li><h3>Texture2D SSL.LoadJPEG(string fileName, string devName, string gameName, bool obfuscate);</h3></li>
+    <li><h3>Texture2D SSL.LoadJPEG(string fileName, string devName, string gameName, string bundleIdentifier, bool obfuscate);</h3></li>
+    <li><h3>Texture2D SSL.LoadImage(string fileName, bool obfuscate);</h3></li>
+    <li><h3>Texture2D SSL.LoadImage(string fileName, string devName, string gameName, bool obfuscate);</h3></li>
+    <li><h3>Texture2D SSL.LoadImage(string fileName, string devName, string gameName, string bundleIdentifier, bool obfuscate);</h3>
+    
+    <p>Load an image as a Texture2D. Function used doesn't actually matter, as long as its a PNG or a JPEG that's being loaded.</p></li>
+    <li><h3>bool SSL.GameExists(string devName, string gameName);</h3></li>
+    <li><h3>bool SSL.GameExists(string devName, string gameName, string bundleIdentifier);</h3>
+    
+    <p>Returns true if a game's save data exists on this device.</p></li>
+    <li><h3>bool SSL.Exists(string fileName);</h3></li>
+    <li><h3>bool SSL.Exists(string devName, string gameName, string fileName);</h3></li>
+    <li><h3>bool SSL.Exists(string devName, string gameName, string bundleIdentifier, string fileName);</h3>
+    
+    <p>Returns true if a specific save file exists on this device.</p></li>
+    <li><h3>void SSL.Delete(string fileName);</h3>
+    
+    <p>Deletes the specified file or directory.</p></li>
+    <li><h3>void SSL.Clear(string directoryName);</h3>
+    
+    <p>Clears all files and directories in the directory. If directory is left blank ( "" ), then all data in base folder is cleared.</p></li>
+    <li><h3>string[] SSL.GetFilesInDirectory(string directoryName);</h3>
+    
+    <p>Returns the filenames of every file in the specified directory. If directory is left blank ( "" ), then base folder is checked.</p></li>
+    </ul>
+    
+    <hr />
+    
+    <p><a name="Notes"></a></p>
+    
+    <h1>Notes</h1>
+    
+    <ul>
+    <li>Serializing primitives (int, string, etc) is currently unsupported with JSON serialization. This is currently unsupported by Unity and may be added in the future. If you try to save a primitive, it will produce a txt file with just "{}" in it. </li>
+    <li>The XOR method is used to obfuscate files. The reason this method is used rather than a proper encryption method like v1.0 used is because: 
+    <ol><li>The XOR method is much faster than triple DES.</li>
+    <li>The files are breakable anyway, as the password is predictable no matter what.</li>
+    <li>It's meant to just make files harder to tamper with, not hold secure data.</li></ol></li>
+    <li>WebGL and iOS cannot read save data from other files, due to the platforms' restrictions.</li>
+    <li>WebGL cannot save files with encryption, and saves to playerprefs instead, as this platform doesn't allow permenant local storage.</li>
+    </ul>
+    
+    <h2>Known Bugs</h2>
+    
+    <ul>
+    <li>None at the moment!</li>
+    </ul>
+    
+    <h2>Planned Features / To Do List:</h2>
+    
+    <ul>
+    <li>More shortcuts for saving and loading?</li>
+    <li>Option to save images to desktop?</li>
+    <li>A way to move files around?</li>
+    </ul>
+    
+    <hr />
+    
+    <p><a name="ChangeLog"></a></p>
+    
+    <h1>ChangeLog</h1>
+    
+    <h3>v2.0</h3>
+    
+    <ul>
+    <li>Clean up and overhaul!</li>
+    <li>Changed function names.</li>
+    <li>Can now save images and strings as PNGs, JPEGs, and TXTs.</li>
+    </ul>
+    
+    <h3>v2.1</h3>
+    
+    <ul>
+    <li>Files and directories can be deleted, now!</li>
+    <li>Added shortcut to check if a file exists locally.</li>
+    <li>Can check if directories exist, now.</li>
+    <li>Renamed "FileExists()" to "Exists()".</li>
+    <li>Added a way to clear a directory, including the root directory.</li>
+    <li>Can now return an array of strings with all filenames in a directory.</li>
+    </ul>
+    
+    <hr />
+    
+    <p><a name="Credits"></a></p>
+    
+    <h1>Credits</h1>
+    
+    <p>Coding and design by Kai Clavier (<a href="http://twitter.com/KaiClavier">@KaiClavier</a>) <br />
+    Extra CSS help by Tak (<a href="http://twitter.com/takorii">@takorii</a>) <br />
+    <br>
+    <br>
+    </article>
+    </article></p>
+    
+    
