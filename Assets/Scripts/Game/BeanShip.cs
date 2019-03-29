@@ -19,6 +19,7 @@ public class BeanShip : Ship {
     if (shootAction.IsPressed && active) {
       particle.SetActive(true);
       if (currentBullet == null) {
+        
         this.currentBullet = Instantiate(bullet).GetComponent<SniperBullet>();
         this.currentBullet.power = 0.1f;
         this.currentBullet.transform.localScale = (Vector3)Vector2.one * 0.1f;

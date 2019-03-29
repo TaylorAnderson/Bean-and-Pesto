@@ -26,6 +26,7 @@ public class Bullet : Entity {
   public override void DoUpdate() {
 
     lifetime -= Time.deltaTime;
+    
     if (lifetime < 0) {
       Die();
     }

@@ -9,6 +9,7 @@ public enum EntityType {
   JELLY,
   FISH,
   PUFFER,
+  NARWHAL,
   UNASSIGNED
 }
 public class Entity : MonoBehaviour {

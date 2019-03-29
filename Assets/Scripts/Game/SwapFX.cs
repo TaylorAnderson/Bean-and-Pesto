@@ -35,6 +35,7 @@ public class SwapFX : MonoBehaviour {
       var newVec = (bullet.transform.position - transform.position).normalized * 0.5f;
       bullet.velocity = bullet.velocity * -1;//newVec;
       bullet.team = BulletTeam.PLAYER;
+      bullet.lifetime += 2;
       bullet.power++;
     }
   }
