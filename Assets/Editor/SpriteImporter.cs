@@ -27,6 +27,8 @@ internal sealed class CustomAssetImporter : AssetPostprocessor {
     importer.textureType = TextureImporterType.Sprite;
     importer.filterMode = FilterMode.Point;
     importer.spritePixelsPerUnit = 16;
+    importer.isReadable = true;
+    
     importer.textureCompression = TextureImporterCompression.Uncompressed;
     importer.compressionQuality = 100;
     TextureImporterSettings settings = new TextureImporterSettings();
