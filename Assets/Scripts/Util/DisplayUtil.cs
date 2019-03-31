@@ -4,7 +4,12 @@ using UnityEngine;
 
 public static class DisplayUtil {
   public static void FlashWhite(MonoBehaviour script, SpriteRenderer sprite, float timeInSeconds) {
+    Debug.Log("flashing white");
     script.StartCoroutine(FlashWhiteForSeconds(sprite, timeInSeconds));
+  }
+  public static void FlashOutlineWhite(MonoBehaviour script, SpriteOutline outline, float timeInSeconds) {
+    Debug.Log("flashing outline white");
+    script.StartCoroutine(FlashOutlineWhiteForSeconds(outline, timeInSeconds));
   }
   public static IEnumerator FlashWhiteForSeconds(SpriteRenderer sprite, float seconds) {
     Shader shaderGUItext = Shader.Find("GUI/Text Shader");
@@ -14,6 +19,17 @@ public static class DisplayUtil {
     yield return new WaitForSeconds(seconds);
     sprite.material.shader = normalShader;
     sprite.color = Color.white;
+
+  }
+
+    public static IEnumerator FlashOutlineWhiteForSeconds(SpriteOutline outline, float seconds) {
+      var outlineColor = outline.color;
+      
+      outline.color = Color.white;
+      outline.Regenerate();
+      yield return new WaitForSeconds(seconds);
+      outline.color = outlineColor;
+      outline.Regenerate();
 
   }
 }

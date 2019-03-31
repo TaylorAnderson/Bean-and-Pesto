@@ -103,6 +103,7 @@ MonoBehaviour:
   explodeOnHit: 0
   explosion: {fileID: 0}
   angleOffset: 0
+  color: 9533183
   isReflectable: 1
 --- !u!95 &8243047839311476567
 Animator:

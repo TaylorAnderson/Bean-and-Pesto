@@ -13,35 +13,25 @@ public class Narwhal : Enemy {
   public Sprite angledSprite;
   private Sprite normalSprite;
   // Start is called before the first frame update
-  override public void Start() {
-    base.Start();
+  override public void Start () {
+    base.Start ();
     this.normalSprite = this.sprite.sprite;
-    UpdateOutline(true);
-    
-  }
-  void UpdateOutline(bool outline) {
-      MaterialPropertyBlock mpb = new MaterialPropertyBlock();
-      this.sprite.GetPropertyBlock(mpb);
-      mpb.SetFloat("_Outline", outline ? 1f : 0);
-      mpb.SetColor("_OutlineColor", Color.white);
-      mpb.SetFloat("_OutlineSize", 1);
-      this.sprite.SetPropertyBlock(mpb);
+
   }
   // Update is called once per frame
-   override public void Update() {
-    base.Update();
+  override public void Update () {
+    base.Update ();
     if (currentBullet == null) {
-      Debug.Log("current bullet is null");
       this.bulletDelayTimer -= Time.deltaTime;
       if (bulletDelayTimer <= 0) {
-        particle.SetActive(true);
-        this.currentBullet = Instantiate(bullet).GetComponent<SniperBullet>();
+        particle.SetActive (true);
+        this.currentBullet = Instantiate (bullet).GetComponent<SniperBullet> ();
         this.currentBullet.power = 0.1f;
-        this.currentBullet.transform.localScale = (Vector3)Vector2.one * 0.1f;
-        this.currentBullet.GetComponent<Collider2D>().enabled = false;
+        this.currentBullet.transform.localScale = (Vector3) Vector2.one * 0.1f;
+        this.currentBullet.GetComponent<Collider2D> ().enabled = false;
         this.currentBullet.owner = this.type;
-        
-        currentBullet.transform.position = this.transform.position + Vector3.left*this.sprite.bounds.extents.x;
+
+        currentBullet.transform.position = this.transform.position + Vector3.left * this.sprite.bounds.extents.x;
         this.bulletDelayTimer = bulletDelay;
       }
     }
@@ -51,8 +41,7 @@ public class Narwhal : Enemy {
       else currentBullet.power = 3;
 
       if (currentBullet.transform.localScale.x < 1.5f) {
-        currentBullet.transform.localScale += (Vector3)Vector2.one * chargeSpeed;
-        Debug.Log(currentBullet.transform.localScale);
+        currentBullet.transform.localScale += (Vector3) Vector2.one * chargeSpeed;
 
         if (currentBullet.transform.localScale.x > 1f) {
           this.sprite.sprite = angledSprite;
@@ -60,18 +49,17 @@ public class Narwhal : Enemy {
       }
       else {
         this.sprite.sprite = normalSprite;
-        
-        particle.SetActive(false);
-        currentBullet.velocity = Vector2.left*0.4f;
+
+        particle.SetActive (false);
+        currentBullet.velocity = Vector2.left * 0.4f;
         currentBullet.shrinkMultiplier = 0.4f;
         currentBullet.shrinking = true;
-        Camera.main.Kick(Vector2.left);
-        
-        this.currentBullet.GetComponent<Collider2D>().enabled = true;
+        Camera.main.Kick (Vector2.left);
+
+        this.currentBullet.GetComponent<Collider2D> ().enabled = true;
         currentBullet = null;
       }
     }
-    
 
   }
 }

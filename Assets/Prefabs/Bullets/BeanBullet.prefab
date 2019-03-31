@@ -232,5 +232,7 @@ MonoBehaviour:
   explodeOnHit: 0
   explosion: {fileID: 0}
   angleOffset: 0
+  color: 7776255
   isReflectable: 0
   shrinking: 0
+  shrinkMultiplier: 1
