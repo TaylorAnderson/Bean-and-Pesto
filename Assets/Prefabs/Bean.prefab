@@ -54,7 +54,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.9
+  m_Radius: 0.5
 --- !u!50 &8188100077062780951
 Rigidbody2D:
   serializedVersion: 4
@@ -571,6 +571,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7315870713300524495}
     m_Modifications:
+    - target: {fileID: 8281678465131510352, guid: adb0e7f99a3e9174abbeb82a1b721854,
+        type: 3}
+      propertyPath: m_Name
+      value: Temp Energy Bar
+      objectReference: {fileID: 0}
     - target: {fileID: 5029674981258752355, guid: adb0e7f99a3e9174abbeb82a1b721854,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -631,11 +636,6 @@ PrefabInstance:
       propertyPath: bar
       value: 
       objectReference: {fileID: 6567323398539546185}
-    - target: {fileID: 8281678465131510352, guid: adb0e7f99a3e9174abbeb82a1b721854,
-        type: 3}
-      propertyPath: m_Name
-      value: Temp Energy Bar
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: adb0e7f99a3e9174abbeb82a1b721854, type: 3}
 --- !u!4 &2994709342871999884 stripped

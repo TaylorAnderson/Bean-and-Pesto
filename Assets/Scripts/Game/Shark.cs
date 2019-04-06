@@ -9,7 +9,7 @@ public class Shark : Enemy {
   private float circleTrailIntervalTimer;
   private float pauseMove = 0;
 
-  private float lifetime = 3;
+  private float lifetime = 6;
   // Start is called before the first frame update
   void Awake() {
     this.offset = new Vector2(0.85f, -0.75f);

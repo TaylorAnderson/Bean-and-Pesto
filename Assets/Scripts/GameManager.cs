@@ -28,7 +28,7 @@ public class GameManager : MonoBehaviour {
 
   [SerializeField] protected SuperTextMesh comboText;
   [SerializeField] protected Image comboMeter;
-  [SerializeField] protected SuperTextMesh scoreText;
+  [SerializeField] protected ScoreText scoreText;
   [SerializeField] protected GameObject scorePop;
   [SerializeField] protected Canvas canvas;
   private List<Enemy> currentEnemiesInWave = new List<Enemy>();
@@ -121,7 +121,7 @@ public class GameManager : MonoBehaviour {
   }
   public void AddScore(int score, Vector3 position) {
     this.score += score * this.combo;
-    this.scoreText.text = this.score.ToString();
+    this.scoreText.score = this.score;
     GameObject scorePopCopy = Instantiate(scorePop);
 
     scorePopCopy.transform.SetParent(canvas.transform);
@@ -154,9 +154,12 @@ public class GameManager : MonoBehaviour {
     else {
       if (isEndless) {
         var wave = GenerateWave();
-        wave.Init();
-        this._currentWave = wave;
-        wave.SetSpawnersActive();
+        if (wave) {
+          wave.Init();
+          this._currentWave = wave;
+          wave.SetSpawnersActive();
+        }
+
       }
       else {
         CurrentWave.SetSpawnersActive();
@@ -166,6 +169,7 @@ public class GameManager : MonoBehaviour {
   }
 
   public Wave GenerateWave() {
+    if (this.waveObjects.Length == 0) return null;
     return Instantiate(this.waveObjects[UnityEngine.Random.Range(0, this.waveObjects.Length - 1)]).GetComponent<Wave>();
   }
 

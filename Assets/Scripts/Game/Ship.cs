@@ -225,7 +225,7 @@ public class Ship : Entity {
 
   private void OnTriggerEnter2D(Collider2D other) {
 
-    if (other.GetComponent<Bullet>() != null && other.GetComponent<Bullet>().team == BulletTeam.ENEMIES) {
+    if (other.GetComponent<Bullet>() != null && other.GetComponent<Bullet>().team == BulletTeam.ENEMIES && this.active) {
       TakeHit(other.GetComponent<Bullet>());
     }
   }

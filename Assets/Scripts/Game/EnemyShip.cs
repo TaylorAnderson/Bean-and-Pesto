@@ -67,7 +67,7 @@ public class EnemyShip : Enemy {
 
   public override void TakeHit(Bullet bullet) {
     base.TakeHit(bullet);
-    this.velocity += bullet.velocity / 10;
+    //this.velocity += bullet.velocity / 10;
   }
 
   public override void Spawn(Side side) {

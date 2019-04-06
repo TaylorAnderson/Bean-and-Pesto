@@ -205,6 +205,21 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 179115736820621997, guid: bc02ee52eb85dac45905e8b36f715575,
         type: 3}
+    - target: {fileID: 7765125789731645109, guid: a4147a0a391bd74459d0988576627c7a,
+        type: 3}
+      propertyPath: hasShield
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7765125789731645109, guid: a4147a0a391bd74459d0988576627c7a,
+        type: 3}
+      propertyPath: shieldColor
+      value: 8574023
+      objectReference: {fileID: 0}
+    - target: {fileID: 7765125789731645109, guid: a4147a0a391bd74459d0988576627c7a,
+        type: 3}
+      propertyPath: shieldHealth
+      value: 0.1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a4147a0a391bd74459d0988576627c7a, type: 3}
 --- !u!4 &3036451731721571177 stripped

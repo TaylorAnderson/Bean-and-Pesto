@@ -21,6 +21,10 @@ public class Spawner : MonoBehaviour {
   [HideInInspector]
   public bool spawned = false;
 
+  public bool hasShield = false;
+  public ShieldColors shieldColor = ShieldColors.BEAN;
+  public float shieldHealth = 0;
+
   [HideInInspector] public Wave wave;
   void Start() {
     this.timer = this.delay + 1.5f; //allow time for indicator
@@ -49,6 +53,13 @@ public class Spawner : MonoBehaviour {
       var worldSpawnPoint = Camera.main.ScreenToWorldPoint(this.indicatorCopy.transform.position);
       enemyCopy.transform.position = new Vector3(worldSpawnPoint.x, worldSpawnPoint.y, 1);
       enemyCopy.Spawn(this.side);
+
+      if (enemy.name != "Narwhal") { //hack alert
+        enemyCopy.hasShield = this.hasShield;
+        enemyCopy.shieldColor = this.shieldColor;
+        enemyCopy.shieldHealth = this.shieldHealth;
+      }
+
       spawned = true;
       Destroy(indicatorCopy.gameObject);
       Destroy(this.gameObject);
@@ -76,6 +87,9 @@ public class Spawner : MonoBehaviour {
       }
       if (enemy.gameObject.name == "PufferFish") {
         Gizmos.DrawIcon(transform.position, "pufferfish-icon.png", true);
+      }
+      if (enemy.gameObject.name == "Narwhal") {
+        Gizmos.DrawIcon(transform.position, "narwhal-icon.png", true);
       }
     }
 #endif

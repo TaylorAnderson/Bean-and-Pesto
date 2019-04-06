@@ -22,14 +22,14 @@ public static class DisplayUtil {
 
   }
 
-    public static IEnumerator FlashOutlineWhiteForSeconds(SpriteOutline outline, float seconds) {
-      var outlineColor = outline.color;
-      
-      outline.color = Color.white;
-      outline.Regenerate();
-      yield return new WaitForSeconds(seconds);
-      outline.color = outlineColor;
-      outline.Regenerate();
+  public static IEnumerator FlashOutlineWhiteForSeconds(SpriteOutline outline, float seconds) {
+    var outlineColor = outline.color;
+
+    outline.color = Color.white;
+    outline.Regenerate();
+    yield return new WaitForSeconds(seconds);
+    outline.color = outlineColor;
+    outline.Regenerate();
 
   }
 }

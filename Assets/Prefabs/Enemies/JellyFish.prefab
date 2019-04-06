@@ -51,7 +51,7 @@ MonoBehaviour:
   shieldColor: 0
   hasShield: 0
   shieldHealth: 5
-  health: 3
+  health: 10
   sprite: {fileID: 1020337288290721666}
   explosion: {fileID: 3224949764335432955, guid: 2c93087bd3467ea44823b5bcde03f28d,
     type: 3}

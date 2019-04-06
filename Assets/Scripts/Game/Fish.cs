@@ -19,7 +19,6 @@ public class Fish : Enemy {
   override public void Start() {
     base.Start();
     this.type = EntityType.FISH;
-    health = 0.5f;
   }
 
   // Update is called once per frame

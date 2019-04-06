@@ -18,7 +18,11 @@ public class FishSchool : Enemy {
       if (child.x > rightmost) rightmost = child.x;
     }
     for (int j = 0; j < transform.childCount; j++) {
-      transform.GetChild(j).GetComponent<Fish>().Init(this);
+      var fish = transform.GetChild(j).GetComponent<Fish>();
+      fish.hasShield = this.hasShield;
+      fish.shieldColor = this.shieldColor;
+      fish.shieldHealth = this.shieldHealth;
+      fish.Init(this);
     }
   }
 
