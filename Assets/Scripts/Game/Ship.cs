@@ -117,7 +117,7 @@ public class Ship : Entity {
   }
 
   public void OnInactiveStart() {
-
+    this.active = false;
   }
 
   public void OnInactiveUpdate() {
@@ -132,7 +132,7 @@ public class Ship : Entity {
   }
 
   public void OnInactiveEnd() {
-    this.active = false;
+
   }
 
   public virtual void OnSwitchStart() {
@@ -141,13 +141,11 @@ public class Ship : Entity {
     swapFX.Init();
     //this.collider.enabled = false;
     if (active) {
-
       Ship.ActiveShip = this.otherShip;
       var mid = (Vector2)(this.transform.position + otherShip.transform.position) / 2;
       var diffVec = (transform.position - otherShip.transform.position).normalized;
       var orthAngle = Mathf.Atan2(diffVec.y, diffVec.x) + Mathf.PI / 2;
       var orthVector = new Vector2(Mathf.Cos(orthAngle), Mathf.Sin(orthAngle)).normalized;
-      Debug.DrawLine(mid, mid + orthVector);
       StartCoroutine(Auto.CurveTo(transform, mid + orthVector * -2.5f, otherShip.transform.position, 0.3f));
       StartCoroutine(Auto.CurveTo(otherShip.transform, mid + orthVector * 2.5f, transform.position, 0.3f));
     }
@@ -171,7 +169,6 @@ public class Ship : Entity {
   public void OnSwitchEnd() {
     swapFX.Kill();
     switchCooldownTimer = switchCooldownTime;
-    if (!active) collider.enabled = true;
   }
 
   public override void DoUpdate() {
@@ -244,9 +241,6 @@ public class Ship : Entity {
     if (this.active) {//who this actually is isnt relevant, its just so that only one ship plays the sound{
       SfxManager.instance.PlaySound(SoundType.SHIP_SWITCH);
     }
-
-
-
     fsm.ChangeState(ShipState.SWITCHING);
     otherShip.fsm.ChangeState(ShipState.SWITCHING);
   }
