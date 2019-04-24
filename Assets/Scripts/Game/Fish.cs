@@ -6,13 +6,12 @@ public class Fish : Enemy {
 
   [HideInInspector] public FishSchool school;
 
+
   private float waveOffset;
 
   private float waveWidth;
   private float waveHeight;
 
-  private float highAngle = -1000;
-  private float lowAngle = 1000;
 
   public bool debug;
 
@@ -40,5 +39,9 @@ public class Fish : Enemy {
     waveOffset = MathUtil.Map(this.transform.position.x, school.leftmost, school.rightmost, 0.25f, 0);
     waveWidth = school.waveWidth;
     waveHeight = school.waveHeight;
+    this.killShakeMultipler = 0f;
+    this.hitStopMultiplier = 0f;
   }
+
+
 }

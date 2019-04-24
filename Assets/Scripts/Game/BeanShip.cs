@@ -8,18 +8,32 @@ public class BeanShip : Ship {
 
   public GameObject particle;
 
+  private int chargePlayerToken = -1;
+
   public override void Start() {
     base.Start();
     this.type = EntityType.BEAN;
     particle.SetActive(false);
     bulletSpeed = 1;
+
   }
+
+
+  override public void Switch() {
+    this.particle.SetActive(false);
+    SfxManager.instance.StopLoopingSound(SoundType.BEAN_CHARGE, this.chargePlayerToken);
+    if (this.currentBullet) {
+      Destroy(this.currentBullet.gameObject);
+    }
+  }
+
 
   override public void Shoot(PlayerAction shootAction) {
     if (shootAction.IsPressed && active) {
       particle.SetActive(true);
       if (currentBullet == null) {
-        
+        this.chargePlayerToken = SfxManager.instance.PlaySound(SoundType.BEAN_CHARGE, 1, true);
+
         this.currentBullet = Instantiate(bullet).GetComponent<SniperBullet>();
         this.currentBullet.power = 0.1f;
         this.currentBullet.transform.localScale = (Vector3)Vector2.one * 0.1f;
@@ -39,8 +53,10 @@ public class BeanShip : Ship {
       particle.SetActive(false);
     }
     if (shootAction.WasReleased) {
+      SfxManager.instance.StopLoopingSound(SoundType.BEAN_CHARGE, this.chargePlayerToken);
       //currentBullet.gameObject.SetActive(true);
       //this.energy -= currentBullet.power * 5;
+      SfxManager.instance.PlaySound(SoundType.BEAN_SHOOT, MathUtil.Map(currentBullet.power, 0, 3, 0, 1));
       currentBullet.velocity = Vector2.right * this.bulletSpeed;
       currentBullet.shrinking = true;
       this.velocity += Vector2.left * currentBullet.power * Time.deltaTime;

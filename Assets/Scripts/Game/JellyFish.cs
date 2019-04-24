@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using PowerTools;
 public class JellyFish : Enemy {
 
   private Vector3 startTarget;
@@ -19,6 +19,7 @@ public class JellyFish : Enemy {
     base.Start();
     this.type = EntityType.JELLY;
     this.GetComponentInChildren<Bullet>().owner = this.type;
+
   }
   override public void DoUpdate() {
     travelTimer -= Time.deltaTime;

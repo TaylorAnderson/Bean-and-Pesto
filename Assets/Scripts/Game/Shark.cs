@@ -9,10 +9,10 @@ public class Shark : Enemy {
   private float circleTrailIntervalTimer;
   private float pauseMove = 0;
 
-  private float lifetime = 6;
+  private float lifetime = 4;
   // Start is called before the first frame update
   void Awake() {
-    this.offset = new Vector2(0.85f, -0.75f);
+    this.offset = new Vector2(0.85f, -0.8f);
     this.type = EntityType.SHARK;
     this.GetComponentInChildren<Bullet>().owner = this.type;
 
@@ -30,7 +30,8 @@ public class Shark : Enemy {
     if (this.circleTrailIntervalTimer > this.circleTrailInterval) {
       this.circleTrailIntervalTimer = 0;
       GameObject circleCopy = Instantiate(circleTrail);
-      circleCopy.transform.position = this.transform.position + Vector3.right * 0.75f + Vector3.down * 0.73f;
+      circleCopy.transform.position = this.transform.position + Vector3.right * 0.75f + Vector3.down * 0.84f;
+      SfxManager.instance.PlaySound(Random.value > 0.5 ? SoundType.SHARK_1 : SoundType.SHARK_2, 0.3f);
     }
   }
 }

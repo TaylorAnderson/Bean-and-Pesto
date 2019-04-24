@@ -187,6 +187,18 @@ MonoBehaviour:
   sprite: {fileID: 2016890179821291353}
   explosion: {fileID: 3224949764335432955, guid: 2c93087bd3467ea44823b5bcde03f28d,
     type: 3}
+  energyDrop: {fileID: 2390973025715481367, guid: 85f39ff9f9f859841aa9d63013f74dbb,
+    type: 3}
+  audioSource: {fileID: 0}
+  maxEnergyDrops: 2
+  minEnergyDrops: 1
+  shootSound: {fileID: 0}
+  shieldDieSound: {fileID: 8300000, guid: 31cb8762f504dbb4ebc05d8a5d7a2439, type: 3}
+  shieldHitSound: {fileID: 0}
+  hitSound: {fileID: 0}
+  altExplosionSound: {fileID: 8300000, guid: 143f34be622fbf049b64b8ff830a286a, type: 3}
+  playHitSound: 0
+  score: 1
   school: {fileID: 0}
   debug: 0
 --- !u!61 &285156612443742363
@@ -255,6 +267,7 @@ MonoBehaviour:
   blurAlphaChoke: 1
   invertBlur: 0
   alphaThreshold: 0.05
+  buffer: 0
   includeChildren: 0
   childLayers:
     serializedVersion: 2

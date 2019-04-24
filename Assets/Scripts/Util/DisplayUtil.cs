@@ -4,11 +4,10 @@ using UnityEngine;
 
 public static class DisplayUtil {
   public static void FlashWhite(MonoBehaviour script, SpriteRenderer sprite, float timeInSeconds) {
-    Debug.Log("flashing white");
     script.StartCoroutine(FlashWhiteForSeconds(sprite, timeInSeconds));
   }
   public static void FlashOutlineWhite(MonoBehaviour script, SpriteOutline outline, float timeInSeconds) {
-    Debug.Log("flashing outline white");
+
     script.StartCoroutine(FlashOutlineWhiteForSeconds(outline, timeInSeconds));
   }
   public static IEnumerator FlashWhiteForSeconds(SpriteRenderer sprite, float seconds) {

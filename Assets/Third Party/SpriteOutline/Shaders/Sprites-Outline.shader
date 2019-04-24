@@ -11,6 +11,7 @@ Shader "Sprites/Outline"
 		_BlurAlphaChoke      ("Blur Alpha Choke",      Float) = 1
 		[Toggle] _InvertBlur ("Invert Blur",           Int)   = 0
 		_AlphaThreshold      ("Alpha Threshold",       Float) = 0.05
+		_Buffer              ("Buffer",                Int)   = 0
 
 		[PerRendererData] _MainTex             ("Sprite Texture",        2D)     = "white" {}
 		//[HideInInspector] _Color               ("Tint",                  Color)  = (1,1,1,1)
@@ -56,6 +57,7 @@ Shader "Sprites/Outline"
 			float  _BlurAlphaChoke;
 			bool   _InvertBlur;
 			float  _AlphaThreshold;
+			int    _Buffer;
 
 			float2 _inTexcoord;
 			float4 _pixelTexcoord;
@@ -91,7 +93,9 @@ Shader "Sprites/Outline"
 
 				float pixelDistance = Distance (0, 0, x, y); // Get the distance from the current transparent pixel to the closest opaque pixel.
 
-				if (pixelDistance > _Size)
+				pixelDistance -= _Buffer;
+
+				if (pixelDistance <= 0 || pixelDistance > _Size)
 					return true;
 
 				float distancePercent = InverseLerp (_strokeThickness, _Size, pixelDistance);
@@ -117,9 +121,9 @@ Shader "Sprites/Outline"
 				_blurThickness   = min (_BlurSize, _Size - 1);
 				_strokeThickness = _Size - _blurThickness;
 
-				int i, j, gridSize, dir = -1;
+				int i, j, gridSize, dir = -1, maxGridRadius = _Size + _Buffer;
 
-				for (int gridRadius = 1; gridRadius <= _Size; gridRadius++)
+				for (int gridRadius = 1; gridRadius <= maxGridRadius; gridRadius++)
 				{
 					gridSize = gridRadius * 2;
 					j        = 0;

@@ -17,7 +17,6 @@ public class SwapFX : MonoBehaviour {
   }
 
   public void Init() {
-    print("initting");
     StartCoroutine(Auto.ScaleTo(circle, Vector3.one, 0.15f, EaseType.BackOut));
     this.GetComponent<Collider2D>().enabled = true;
     //particleSystem.Play();
@@ -31,6 +30,7 @@ public class SwapFX : MonoBehaviour {
   private void OnTriggerEnter2D(Collider2D other) {
     var bullet = other.GetComponent<Bullet>();
     if (bullet != null && bullet.team == BulletTeam.ENEMIES) {
+      SfxManager.instance.PlaySound(SoundType.SHIP_PARRY);
       StartCoroutine(GameManager.instance.PauseForSeconds(0.1f));
       var newVec = (bullet.transform.position - transform.position).normalized * 0.5f;
       bullet.velocity = bullet.velocity * -1;//newVec;

@@ -13,14 +13,17 @@ video on the Asset Store page or watch the video directly on YouTube:
 
 [Release Notes]
 
+v2.1   (04/07/19) => Added UI.image support and buffer slider.
+
 v2.0.1 (02/11/19) => Fixed real-time rendering on mobile.
 
-v2.0 (01/14/19) => Major changes/improvements. For additional information,
-                   refer to [Upgrade Notes] and [Changelog] below.
+v2.0   (01/14/19) => Major changes/improvements. For additional information,
+                     refer to [Upgrade Notes] and [Changelog] below.
 
-v1.1 (05/14/18) => Added spritesheet, animation, and isometric sorting support.
+v1.1   (05/14/18) => Added spritesheet, animation, and isometric sorting
+                     support.
 
-v1.0 (01/02/18) => Initial release.
+v1.0   (01/02/18) => Initial release.
 
 ----------
 
@@ -79,23 +82,26 @@ A: In order for the included pixel shader to display outlines around your
    if you are using sprites that have semi-transparent pixels in them and want
    those pixels to *not* be included in the outline.
 
-9. Enable "Include Children" to have child sprites nested within the main
-   sprite included in the outline.
+9. Drag the "Buffer" slider to add/remove a buffer of transparent pixels
+   between the sprite(s) and the outline.
 
-10. Use "Child Layers" to filter the child sprites that will be included in the
+10. Enable "Include Children" to have child sprites nested within the main
+    sprite included in the outline.
+
+11. Use "Child Layers" to filter the child sprites that will be included in the
     outline on a per-layer basis. Child sprites that do *not* belong to one of
     the checked layers will be excluded.
 
-11. Fill "Ignore Child Names" with names of nested game objects that you want
+12. Fill "Ignore Child Names" with names of nested game objects that you want
     excluded from the outline.
 
-12. Change "Sort Method" to adjust how the outline is sorted (either the lowest
+13. Change "Sort Method" to adjust how the outline is sorted (either the lowest
     sorting order - 1; or the highest z-axis value + 1).
 
-13. Enable "Is Animated" to auto-regenerate the outline when the main sprite
+14. Enable "Is Animated" to auto-regenerate the outline when the main sprite
     frame changes (does not track child sprites).
 
-14. Enable "Use Exported Frame" to use a pre-rendered image of the outline
+15. Enable "Use Exported Frame" to use a pre-rendered image of the outline
     instead of rendering in real time using the included pixel shader. If your
     outline does not change appearance at all during run time, you should
     enable this before releasing your game as a performance optimization. This
@@ -107,14 +113,14 @@ A: In order for the included pixel shader to display outlines around your
     Editor and back into it for the image to be imported. The path to the
     exported outline is displayed in the console.
 
-15. Use "Custom Frame Name" to change the file name of the exported outline
+16. Use "Custom Frame Name" to change the file name of the exported outline
     from the default (the name of the game object) to one of your choosing.
     This allows multiple game objects sharing the same name to export unique
     outlines by preventing one from overriding the other.
 
-16. Enable "Generates On Start" to auto-regenerate the outline at game start.
+17. Enable "Generates On Start" to auto-regenerate the outline at game start.
 
-17. Disable "Generates On Validate" to prevent auto-regeneration of the outline
+18. Disable "Generates On Validate" to prevent auto-regeneration of the outline
     any time the component is loaded in the editor or when any value is changed
     via the Inspector.
 
@@ -137,7 +143,7 @@ A: In order for the included pixel shader to display outlines around your
     -> Sets the z-axis offset, sorting order, and/or layer of the outline
        to the specified value(s).
 
-* ShouldIgnoreSprite(SpriteRenderer sprite) [Overridable]
+* ShouldIgnoreSprite(GameObject instance, Sprite sprite) [Overridable]
     -> Callback method used to determine which child sprites to exclude from
        the outline when traversing the children of the main sprite.
 
@@ -178,6 +184,12 @@ how to do so:
 ----------
 
 [Changelog]
+
+v2.1:
+
+* ADDED:
+   -> UI.Image support
+   -> buffer
 
 v2.0:
 

@@ -6,6 +6,11 @@ using UnityEditor;
 public class Wave : MonoBehaviour {
   public int wave = 0;
   private List<Spawner> spawners = new List<Spawner>();
+
+  [HideInInspector]
+  private float lifetime = 8;
+
+  public bool finished = false;
   // Start is called before the first frame update
   void Start() {
     Init();
@@ -24,7 +29,8 @@ public class Wave : MonoBehaviour {
 
   // Update is called once per frame
   void Update() {
-
+    this.lifetime -= Time.deltaTime;
+    this.finished = this.lifetime <= 0;
   }
   public void SetSpawnersActive() {
     for (int i = 0; i < spawners.Count; i++) {

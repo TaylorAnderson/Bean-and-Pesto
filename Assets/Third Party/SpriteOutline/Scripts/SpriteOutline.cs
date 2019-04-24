@@ -1,10 +1,16 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
+// TODO: Outlines currently do not get sorted when "Use Exported Frame" is true.
+
+// TODO: Since the sorting sprite is only updated on regeneration, if a different child sprite happens to be sorted underneath, the outline will appear on top until it is regenerated.
+
+// TODO: UI.Image sorting (to ensure the outline appears below an image, it must *not* be a child of the game object, but instead be positioned just above the game object in the hierarchy).
+
 [ExecuteInEditMode]
 [DisallowMultipleComponent]
-[RequireComponent(typeof(SpriteRenderer))]
 public class SpriteOutline : MonoBehaviour {
 
 	public enum SortMethod {
@@ -45,6 +51,10 @@ public class SpriteOutline : MonoBehaviour {
 	[Range(0.01f, 1)]
 	public float alphaThreshold = 0.05f;
 
+	[Tooltip("Adds a buffer of transparent pixels between the sprite(s) and the outline.")]
+	[Range(0, 20)]
+	public int buffer;
+
 	[Tooltip("Include child sprites in the outline.")]
 	public bool includeChildren;
 
@@ -54,7 +64,7 @@ public class SpriteOutline : MonoBehaviour {
 	[Tooltip("Exclude child sprites by their game object name.")]
 	public string[] ignoreChildNames = new string[0];
 
-	[Tooltip("Change how the outline is sorted (either the lowest sorting order - 1; or the highest z-axis value + 1).")] // TODO
+	[Tooltip("Change how the outline is sorted (either the lowest sorting order - 1; or the highest z-axis value + 1).")]
 	public SortMethod sortMethod = SortMethod.Z_AXIS;
 
 	[Tooltip("Auto-regenerate the outline when the main sprite frame changes (does not track child sprites).")]
@@ -74,9 +84,12 @@ public class SpriteOutline : MonoBehaviour {
 	public bool generatesOnValidate = true;
 	#endif
 
-	SpriteRenderer sprite;
+	SpriteRenderer spriteRenderer;
+	Image          image;
+	Sprite         sprite;
 	GameObject     outline;
-	SpriteRenderer outlineSprite;
+	SpriteRenderer outlineSpriteRenderer;
+	Image          outlineImage;
 	Material       material;
 	Texture2D      texture;
 
@@ -84,15 +97,17 @@ public class SpriteOutline : MonoBehaviour {
 	float   _boundsMinY;
 	float   _boundsMaxX;
 	float   _boundsMaxY;
+	Vector3 _pos;
 	Vector3 _scale;
 	Vector2 _anchor;
 	Rect    _textureRect = Rect.zero;
 	bool    _cachedUseExportedFrame;
 	bool    _shouldRegenerateMaterial;
 
-	SpriteRenderer          _sortingSprite;
-	Dictionary<int, Sprite> _cachedOutlineSprites = new Dictionary<int, Sprite> ();
-	int                     _lastSpriteFrameId;
+	SpriteRenderer           _sortingSpriteRenderer;
+	Dictionary<int, Sprite>  _cachedOutlineSprites = new Dictionary<int, Sprite> ();
+	Dictionary<int, Vector2> _cachedOutlineAnchors = new Dictionary<int, Vector2> ();
+	int                      _lastSpriteFrameId;
 
 	void Start() {
 		#if UNITY_EDITOR
@@ -115,11 +130,35 @@ public class SpriteOutline : MonoBehaviour {
 		Transform outlineTransform = transform.Find ("Outline");
 
 		if (outlineTransform) {
-			outline       = outlineTransform.gameObject;
-			outlineSprite = outline.GetComponent<SpriteRenderer> ();
+			outline               = outlineTransform.gameObject;
+			outlineSpriteRenderer = outline.GetComponent<SpriteRenderer> ();
+			outlineImage          = outline.GetComponent<Image> ();
+		}
+	}
+
+	void TryGetSprite() {
+		sprite = null;
+
+		if (!spriteRenderer) spriteRenderer = GetComponent<SpriteRenderer> ();
+		if (!image)          image          = GetComponent<Image> ();
+
+		if (!spriteRenderer && !image) {
+			LogError ("Outline cannot be created (SpriteRenderer/Image not found; add one to this game object to fix)");
+			return;
+		} else if (spriteRenderer && image) {
+			LogError ("Outline cannot be created (only one SpriteRenderer/Image can be attached, not both)");
+			return;
+		} else if (image && !image.canvas) {
+			LogError ("Outline cannot be created (Image must use a Canvas; add one to this game object or a parent to fix)");
+			return;
 		}
 
-		sprite = gameObject.GetComponent<SpriteRenderer> (); // Get a reference to the game object's sprite renderer.
+		sprite = spriteRenderer ? spriteRenderer.sprite : (image ? image.sprite : null);
+
+		if (!sprite) {
+			LogError ("Outline cannot be created (there is no sprite assigned to the SpriteRenderer/Image)");
+			return;
+		}
 	}
 
 	void LateUpdate() {
@@ -140,13 +179,25 @@ public class SpriteOutline : MonoBehaviour {
 				return;
 		}
 
-		int spriteFrameId = sprite.sprite.GetInstanceID ();
+		TryGetSprite ();
+
+		if (!sprite)
+			return;
+
+		int spriteFrameId = sprite.GetInstanceID ();
 
 		if (spriteFrameId == _lastSpriteFrameId)
 			return;
 
 		if (_cachedOutlineSprites.ContainsKey (spriteFrameId)) {
-			outlineSprite.sprite = _cachedOutlineSprites [spriteFrameId];
+			if (outlineSpriteRenderer) {
+				outlineSpriteRenderer.sprite = _cachedOutlineSprites [spriteFrameId];
+			} else if (outlineImage) {
+				outlineImage.sprite                         = _cachedOutlineSprites [spriteFrameId];
+				outlineImage.rectTransform.anchoredPosition = _cachedOutlineAnchors [spriteFrameId];
+
+				outlineImage.SetNativeSize ();
+			}
 		} else {
 			Regenerate ();
 		}
@@ -155,8 +206,6 @@ public class SpriteOutline : MonoBehaviour {
 	}
 
 	public void Regenerate() {
-		_sortingSprite = null;
-
 		if (useExportedFrame != _cachedUseExportedFrame) {
 			_shouldRegenerateMaterial = true;
 		}
@@ -166,7 +215,7 @@ public class SpriteOutline : MonoBehaviour {
 			Shader shader     = Shader.Find (shaderName);
 
 			if (!shader) {
-				LogError ("Material could not be created (\"{0}\" shader is missing)", shaderName); // NOTE: This should never happen.
+				LogError ("Material cannot be created (\"{0}\" shader is missing)", shaderName); // NOTE: This should never happen.
 				return;
 			}
 
@@ -181,9 +230,21 @@ public class SpriteOutline : MonoBehaviour {
 			TryGetOutline ();
 
 			if (!outline) {
-				outline       = new GameObject ("Outline");
-				outlineSprite = outline.AddComponent<SpriteRenderer> ();
+				outline = new GameObject ("Outline");
 			}
+		}
+
+		outline.transform.SetParent (transform, false);
+
+		TryGetSprite ();
+
+		if (!sprite)
+			return;
+
+		if (spriteRenderer && !outlineSpriteRenderer) {
+			outlineSpriteRenderer = outline.AddComponent<SpriteRenderer> ();
+		} else if (image && !outlineImage) {
+			outlineImage = outline.AddComponent<Image> ();
 		}
 
 		Vector3    cachedPosition = transform.position;
@@ -199,16 +260,22 @@ public class SpriteOutline : MonoBehaviour {
 
 		transform.localScale = _scale;
 
-		outline.transform.parent = transform;
-
-		outlineSprite.material = material;
+		if (outlineSpriteRenderer) {
+			outlineSpriteRenderer.material = material;
+		} else if (outlineImage) {
+			outlineImage.material = material;
+		}
 
 		_boundsMinX = float.MaxValue;
 		_boundsMinY = float.MaxValue;
 		_boundsMaxX = float.MinValue;
 		_boundsMaxY = float.MinValue;
 
-		SpriteRendererExt.GetActiveBounds (sprite, ref _boundsMinX, ref _boundsMinY, ref _boundsMaxX, ref _boundsMaxY, includeChildren, ShouldIgnoreSprite);
+		if (outlineSpriteRenderer) {
+			SpriteRendererExt.GetActiveBounds (spriteRenderer, ref _boundsMinX, ref _boundsMinY, ref _boundsMaxX, ref _boundsMaxY, includeChildren, ShouldIgnoreSprite);
+		} else if (outlineImage) {
+			ImageExt.GetActiveBounds (image, ref _boundsMinX, ref _boundsMinY, ref _boundsMaxX, ref _boundsMaxY, includeChildren, ShouldIgnoreSprite);
+		}
 
 		if (_boundsMinX == float.MaxValue) {
 			SetTransformValues (cachedPosition, cachedRotation, cachedScale);
@@ -235,8 +302,10 @@ public class SpriteOutline : MonoBehaviour {
 			SetupTexture ();
 			ClearTexture ();
 
+			_sortingSpriteRenderer = null;
+
 			try {
-				FillTexture (sprite);
+				FillTexture (gameObject, sprite);
 			} catch (UnityException e) {
 				SetTransformValues (cachedPosition, cachedRotation, cachedScale);
 
@@ -245,50 +314,72 @@ public class SpriteOutline : MonoBehaviour {
 
 				string textureName = e.Message.Substring (startIndex, endIndex - startIndex);
 
-				LogError ("Texture {0} is not readable (enable \"Read/Write Enabled\" in the Texture Import Settings to fix)", textureName);
+				LogError ("Texture {0} is not readable (turn on \"Read/Write Enabled\" in its Import Settings to fix)", textureName);
 				return;
 			}
 
 			texture.Apply ();
 
-			outlineSprite.sharedMaterial.SetInt   ("_Size",                size);
-			outlineSprite.sharedMaterial.SetInt   ("_BlurSize",            blurSize);
-			outlineSprite.sharedMaterial.SetColor ("_Color",               color);
-			outlineSprite.sharedMaterial.SetFloat ("_BlurAlphaMultiplier", blurAlphaMultiplier);
-			outlineSprite.sharedMaterial.SetFloat ("_BlurAlphaChoke",      blurAlphaChoke);
-			outlineSprite.sharedMaterial.SetInt   ("_InvertBlur",          invertBlur ? 1 : 0);
-			outlineSprite.sharedMaterial.SetFloat ("_AlphaThreshold",      alphaThreshold);
+			material.SetInt   ("_Size",                size);
+			material.SetInt   ("_BlurSize",            blurSize);
+			material.SetColor ("_Color",               color);
+			material.SetFloat ("_BlurAlphaMultiplier", blurAlphaMultiplier);
+			material.SetFloat ("_BlurAlphaChoke",      blurAlphaChoke);
+			material.SetInt   ("_InvertBlur",          invertBlur ? 1 : 0);
+			material.SetFloat ("_AlphaThreshold",      alphaThreshold);
+			material.SetInt   ("_Buffer",              buffer);
 		}
 
 		_textureRect.width  = texture.width;
 		_textureRect.height = texture.height;
 
-		_anchor.x = (sprite.sprite.pivot.x + GetOffsetX (sprite)) / texture.width;
-		_anchor.y = (sprite.sprite.pivot.y + GetOffsetY (sprite)) / texture.height;
+		_anchor.x = (sprite.pivot.x + GetOffsetX (gameObject, sprite)) / texture.width;
+		_anchor.y = (sprite.pivot.y + GetOffsetY (gameObject, sprite)) / texture.height;
 
-		outlineSprite.sprite = Sprite.Create (texture, _textureRect, _anchor, sprite.sprite.pixelsPerUnit, 0, SpriteMeshType.FullRect);
+		Sprite outlineSprite = Sprite.Create (texture, _textureRect, _anchor, sprite.pixelsPerUnit, 0, SpriteMeshType.FullRect);
 
-		SortOutline ();
+		if (outlineSpriteRenderer) {
+			outlineSpriteRenderer.sprite = outlineSprite;
+		} else if (outlineImage) {
+			outlineImage.sprite = outlineSprite;
+
+			float pixelsPerUnit = (image.canvas.referencePixelsPerUnit / sprite.pixelsPerUnit);
+
+			_anchor.x = -(GetOffsetX (gameObject, sprite) + sprite.textureRect.width  / 2 - texture.width  / 2f) * pixelsPerUnit;
+			_anchor.y = -(GetOffsetY (gameObject, sprite) + sprite.textureRect.height / 2 - texture.height / 2f) * pixelsPerUnit;
+
+			outlineImage.rectTransform.anchoredPosition = _anchor;
+
+			outlineImage.SetNativeSize ();
+
+			outlineImage.canvasRenderer.Clear ();
+		}
 
 		SetTransformValues (cachedPosition, cachedRotation, cachedScale);
+
+		SortOutline (); // NOTE: Must sort after resetting the transform values to calculate the correct Z-axis value.
 
 		if (Application.isPlaying && isAnimated) {
 			if (useExportedFrame) // Do not cache the exported frame as animations are not currently supported.
 				return;
 
 			Texture2D textureClone       = Texture2D.Instantiate (texture);
-			Sprite    outlineSpriteClone = Sprite   .Create      (textureClone, _textureRect, _anchor, sprite.sprite.pixelsPerUnit, 0, SpriteMeshType.FullRect);
+			Sprite    outlineSpriteClone = Sprite   .Create      (textureClone, _textureRect, _anchor, sprite.pixelsPerUnit, 0, SpriteMeshType.FullRect);
 
-			int spriteFrameId = sprite.sprite.GetInstanceID ();
+			int spriteFrameId = sprite.GetInstanceID ();
 
 			_cachedOutlineSprites [spriteFrameId] = outlineSpriteClone;
+
+			if (outlineImage) {
+				_cachedOutlineAnchors [spriteFrameId] = outlineImage.rectTransform.anchoredPosition;
+			}
 		}
 	}
 
 	void SetupTexture() {
-		int padding = size * 2;
-		int width   = Mathf.CeilToInt ((_boundsMaxX - _boundsMinX) * sprite.sprite.pixelsPerUnit) + padding;
-		int height  = Mathf.CeilToInt ((_boundsMaxY - _boundsMinY) * sprite.sprite.pixelsPerUnit) + padding;
+		int padding = (size + buffer) * 2;
+		int width   = Mathf.CeilToInt ((_boundsMaxX - _boundsMinX) * sprite.pixelsPerUnit) + padding;
+		int height  = Mathf.CeilToInt ((_boundsMaxY - _boundsMinY) * sprite.pixelsPerUnit) + padding;
 
 		if (!texture) {
 			texture            = new Texture2D (width, height, TextureFormat.RGBA32, false);
@@ -310,15 +401,15 @@ public class SpriteOutline : MonoBehaviour {
 		texture.SetPixels32 (pixels);
 	}
 
-	void FillTexture(SpriteRenderer sprite) {
-		if (!ShouldIgnoreSprite (sprite)) {
-			int width  = (int)sprite.sprite.rect.width;
-			int height = (int)sprite.sprite.rect.height;
+	void FillTexture(GameObject instance, Sprite sprite) {
+		if (!ShouldIgnoreSprite (instance, sprite)) {
+			int width  = (int)sprite.rect.width;
+			int height = (int)sprite.rect.height;
 
-			Color[] pixels = sprite.sprite.texture.GetPixels ((int)sprite.sprite.rect.x, (int)sprite.sprite.rect.y, width, height);
+			Color[] pixels = sprite.texture.GetPixels ((int)sprite.rect.x, (int)sprite.rect.y, width, height);
 
-			int offsetX = GetOffsetX (sprite);
-			int offsetY = GetOffsetY (sprite);
+			int offsetX = GetOffsetX (instance, sprite);
+			int offsetY = GetOffsetY (instance, sprite);
 
 			for (int y = 0; y < height; y++) {
 				for (int x = 0; x < width; x++) {
@@ -330,29 +421,52 @@ public class SpriteOutline : MonoBehaviour {
 				}
 			}
 
-			switch (sortMethod) {
+			SpriteRenderer instanceSpriteRenderer = instance.GetComponent<SpriteRenderer> ();
 
-			case SortMethod.SORTING_ORDER: if (!_sortingSprite || sprite.sortingOrder         < _sortingSprite.sortingOrder)         _sortingSprite = sprite; break;
-			case SortMethod.Z_AXIS:        if (!_sortingSprite || sprite.transform.position.z > _sortingSprite.transform.position.z) _sortingSprite = sprite; break;
+			if (outlineSpriteRenderer && instanceSpriteRenderer) {
+				switch (sortMethod) {
 
+				case SortMethod.SORTING_ORDER: if (!_sortingSpriteRenderer || instanceSpriteRenderer.sortingOrder         < _sortingSpriteRenderer.sortingOrder)         _sortingSpriteRenderer = instanceSpriteRenderer; break;
+				case SortMethod.Z_AXIS:        if (!_sortingSpriteRenderer || instanceSpriteRenderer.transform.position.z > _sortingSpriteRenderer.transform.position.z) _sortingSpriteRenderer = instanceSpriteRenderer; break;
+
+				}
 			}
 		}
 
 		if (!includeChildren)
 			return;
 
-		SpriteRendererExt.ForEachChild (sprite, childSprite => {
-			FillTexture (childSprite);
-			return true;
-		});
+		int childCount = instance.transform.childCount;
+
+		for (int i = 0; i < childCount; i++) {
+			Transform child = instance.transform.GetChild (i);
+
+			if (outlineSpriteRenderer) {
+				SpriteRenderer childSpriteRenderer = child.GetComponent<SpriteRenderer> ();
+
+				if (childSpriteRenderer) {
+					FillTexture (childSpriteRenderer.gameObject, childSpriteRenderer.sprite);
+				}
+			} else if (outlineImage) {
+				Image childImage = child.GetComponent<Image> ();
+
+				if (childImage) {
+					FillTexture (childImage.gameObject, childImage.sprite);
+				}
+			}
+		}
 	}
 
-	int GetOffsetX(SpriteRenderer sprite) {
-		return size + Mathf.RoundToInt ((sprite.bounds.min.x - _boundsMinX) * sprite.sprite.pixelsPerUnit);
+	int GetOffsetX(GameObject instance, Sprite sprite) {
+		float spriteMinX = instance.transform.position.x / (image ? image.canvas.referencePixelsPerUnit : 1) + sprite.bounds.min.x;
+
+		return size + buffer + Mathf.RoundToInt ((spriteMinX - _boundsMinX) * sprite.pixelsPerUnit);
 	}
 
-	int GetOffsetY(SpriteRenderer sprite) {
-		return size + Mathf.RoundToInt ((sprite.bounds.min.y - _boundsMinY) * sprite.sprite.pixelsPerUnit);
+	int GetOffsetY(GameObject instance, Sprite sprite) {
+		float spriteMinY = instance.transform.position.y / (image ? image.canvas.referencePixelsPerUnit : 1) + sprite.bounds.min.y;
+
+		return size + buffer + Mathf.RoundToInt ((spriteMinY - _boundsMinY) * sprite.pixelsPerUnit);
 	}
 
 	void SetTransformValues(Vector3 position, Quaternion rotation, Vector3 scale) {
@@ -361,26 +475,32 @@ public class SpriteOutline : MonoBehaviour {
 		transform.localScale = scale;
 	}
 
-	public virtual bool ShouldIgnoreSprite(SpriteRenderer sprite) {
-		return !sprite.gameObject.activeInHierarchy || !sprite.enabled || !sprite.sprite || sprite == outlineSprite ||
-			(sprite.gameObject != gameObject && (!LayerMaskExt.ContainsLayer (childLayers, sprite.gameObject.layer) || System.Array.IndexOf (ignoreChildNames, sprite.name) > -1));
+	public virtual bool ShouldIgnoreSprite(GameObject instance, Sprite sprite) {
+		return !instance.activeInHierarchy || !sprite ||
+			(outlineSpriteRenderer && (sprite == outlineSpriteRenderer.sprite || !instance.GetComponent<SpriteRenderer> ().enabled)) ||
+			(outlineImage && (sprite == outlineImage.sprite || !instance.GetComponent<Image> ().enabled)) ||
+			(instance != gameObject && (!LayerMaskExt.ContainsLayer (childLayers, instance.layer) || System.Array.IndexOf (ignoreChildNames, instance.name) > -1));
 	}
 
 	public void SortOutline(float zOffset = 1, int? sortingOrder = null, int? sortingLayerId = null) {
-		if (!outline || !_sortingSprite)
+		if (!outline)
 			return;
 
-		outlineSprite.flipX = sprite.flipX;
-		outlineSprite.flipY = sprite.flipY;
+		outline.layer = gameObject.layer;
 
-		outlineSprite.sortingLayerID = sortingLayerId.HasValue ? sortingLayerId.Value : _sortingSprite.sortingLayerID;
-		outlineSprite.sortingOrder   = sortingOrder  .HasValue ? sortingOrder  .Value : _sortingSprite.sortingOrder - ((sortMethod == SortMethod.SORTING_ORDER) ? 1 : 0);
+		if (!_sortingSpriteRenderer)
+			return;
 
-		if (sortMethod == SortMethod.Z_AXIS) {
-			outlineSprite.transform.localPosition = Vector3.forward * (_sortingSprite.transform.localPosition.z + zOffset);
-		} else {
-			outlineSprite.transform.localPosition = Vector3.zero;
-		}
+		outlineSpriteRenderer.flipX          = spriteRenderer.flipX;
+		outlineSpriteRenderer.flipY          = spriteRenderer.flipY;
+		outlineSpriteRenderer.sortingLayerID = sortingLayerId.HasValue ? sortingLayerId.Value : _sortingSpriteRenderer.sortingLayerID;
+		outlineSpriteRenderer.sortingOrder   = sortingOrder  .HasValue ? sortingOrder  .Value : _sortingSpriteRenderer.sortingOrder - ((sortMethod == SortMethod.SORTING_ORDER) ? 1 : 0);
+
+		_pos.x = outline.transform.localPosition.x;
+		_pos.y = outline.transform.localPosition.y;
+		_pos.z = (sortMethod == SortMethod.Z_AXIS) ? zOffset + ((_sortingSpriteRenderer != spriteRenderer) ? _sortingSpriteRenderer.transform.localPosition.z : 0) : 0;
+
+		outline.transform.localPosition = _pos;
 	}
 
 	public void Show() {
@@ -408,10 +528,12 @@ public class SpriteOutline : MonoBehaviour {
 		} else {
 			DestroyImmediate (outline);
 		}
+
+		sprite = null;
 	}
 
 	public void Export() {
-		if (!outline) {
+		if (!texture) {
 			LogError ("Nothing to export (the outline does not exist)");
 			return;
 		}
@@ -426,7 +548,7 @@ public class SpriteOutline : MonoBehaviour {
 
 		RenderTexture.active = renderTexture;
 
-		Graphics.Blit (texture, renderTexture, outlineSprite.sharedMaterial);
+		Graphics.Blit (texture, renderTexture, material);
 
 		Texture2D screenshot = new Texture2D (texture.width, texture.height, TextureFormat.RGBA32, false);
 		screenshot.ReadPixels (_textureRect, 0, 0, false);

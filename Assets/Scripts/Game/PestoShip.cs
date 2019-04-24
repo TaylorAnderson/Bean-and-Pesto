@@ -41,6 +41,7 @@ public class PestoShip : Ship {
     if (shootAction.IsPressed) {
       bulletCounter += Time.deltaTime;
       if (bulletCounter > bulletInterval) {
+        SfxManager.instance.PlaySound(Random.value > 0.5f ? SoundType.PESTO_SHOOT : SoundType.PESTO_SHOOT_2, 1);
         GameObject bulletCopy = Instantiate(bullet);
         bulletCopy.transform.position = bulletOrigin.position;
         var bulletScript = bulletCopy.GetComponent<Bullet>();

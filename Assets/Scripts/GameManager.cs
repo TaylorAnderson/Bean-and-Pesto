@@ -26,14 +26,16 @@ public class GameManager : MonoBehaviour {
   private float comboKillTime = 10;
   private float comboKillTimer = 10;
 
-  [SerializeField] protected SuperTextMesh comboText;
-  [SerializeField] protected Image comboMeter;
+  public ComboText comboText;
   [SerializeField] protected ScoreText scoreText;
   [SerializeField] protected GameObject scorePop;
+  [SerializeField] protected GameObject scorePopNegative;
   [SerializeField] protected Canvas canvas;
   private List<Enemy> currentEnemiesInWave = new List<Enemy>();
   private List<Wave> waves = new List<Wave>();
   public EndPauseSignal endPauseSignal;
+
+  private bool switchingWaves = false;
 
   private bool isEndless = true;
 
@@ -61,12 +63,16 @@ public class GameManager : MonoBehaviour {
   void Awake() {
     QualitySettings.vSyncCount = 0;
     Application.targetFrameRate = 60;
+    Screen.fullScreen = false;
+    Screen.SetResolution(1280, 720, false);
     //Check if instance already exists
     if (instance == null)
       instance = this;
 
     else if (instance != this)
       Destroy(gameObject);
+
+    DontDestroyOnLoad(gameObject);
 
     SceneManager.activeSceneChanged += (Scene current, Scene next) => {
 
@@ -78,7 +84,6 @@ public class GameManager : MonoBehaviour {
     if (isEndless) {
       StartCoroutine(StartWave());
     }
-
   }
 
   // Update is called once per frame
@@ -90,6 +95,11 @@ public class GameManager : MonoBehaviour {
         //this.DecrementCombo();
         comboKillTimer = comboKillTime;
       }
+    }
+
+    if (this.CurrentWave && this.CurrentWave.finished && !switchingWaves) {
+      this.StartCoroutine(StartWave());
+      switchingWaves = true;
     }
 
   }
@@ -111,8 +121,10 @@ public class GameManager : MonoBehaviour {
 
   public void DeregisterEnemy(Enemy enemy) {
     this.currentEnemiesInWave.Remove(enemy);
+
+
     if (this.currentEnemiesInWave.Count == 0) {
-      if (CurrentWave && CurrentWave.AllEnemiesSpawned()) StartCoroutine(StartWave());
+      if (CurrentWave && CurrentWave.AllEnemiesSpawned()) this.CurrentWave.finished = true;
     }
   }
 
@@ -120,28 +132,30 @@ public class GameManager : MonoBehaviour {
     waves.Add(wave);
   }
   public void AddScore(int score, Vector3 position) {
-    this.score += score * this.combo;
+
+    this.score += score < 0 ? score : score * this.combo;
     this.scoreText.score = this.score;
-    GameObject scorePopCopy = Instantiate(scorePop);
+    GameObject scorePopCopy = Instantiate(score < 0 ? scorePopNegative : scorePop);
 
     scorePopCopy.transform.SetParent(canvas.transform);
     scorePopCopy.transform.position = RectTransformUtility.WorldToScreenPoint(Camera.main, position);
-
-    scorePopCopy.GetComponent<ScorePop>().SetText((score * this.combo).ToString());
+    scorePopCopy.transform.position += Vector3.left * scorePopCopy.GetComponent<RectTransform>().rect.width / 2;
+    scorePopCopy.GetComponent<ScorePop>().SetText(score.ToString() + (this.combo > 1 && score > 0 ? " x " + this.combo.ToString() : ""));
   }
   public void IncrementCombo() {
     comboKillTimer = comboKillTime;
     combo++;
-    this.comboText.text = combo.ToString() + "x";
+    comboText.SetCombo(combo);
+
   }
   public void DecrementCombo() {
     if (combo == 1) return;
     this.combo = (int)(combo / 2);
-    this.comboText.text = combo.ToString();
+    comboText.SetCombo(combo);
   }
   public void ClearCombo() {
     combo = 1;
-    this.comboText.text = combo.ToString();
+    comboText.SetCombo(combo);
   }
 
   IEnumerator StartWave() {
@@ -152,12 +166,14 @@ public class GameManager : MonoBehaviour {
       EndGame();
     }
     else {
+
       if (isEndless) {
         var wave = GenerateWave();
         if (wave) {
           wave.Init();
           this._currentWave = wave;
           wave.SetSpawnersActive();
+          this.switchingWaves = false;
         }
 
       }

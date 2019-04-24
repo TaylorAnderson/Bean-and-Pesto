@@ -17,7 +17,6 @@ public class PufferFish : Enemy {
   private Vector3 currentTarget;
   private Vector2 velocity;
   private float travelTimer = 1;
-  private bool spawningIn = true;
 
   private float spikeInterval = 1;
   private float spikeTimer = 0;
@@ -31,6 +30,7 @@ public class PufferFish : Enemy {
     base.DoUpdate();
     spikeTimer += Time.deltaTime;
     if (spikeTimer > spikeInterval) {
+      SfxManager.instance.PlaySound(SoundType.PUFFER_SPIKE);
       SendSpikes(10);
       spikeTimer = 0;
     }

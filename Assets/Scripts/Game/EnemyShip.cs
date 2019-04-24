@@ -9,6 +9,8 @@ public enum State {
 public class EnemyShip : Enemy {
   public Bullet bullet;
   public Transform bulletPos;
+
+
   private float[] positions = new float[4];
   private int currentIndex = 0;
   private float bulletEmitTimer = 0;
@@ -36,6 +38,7 @@ public class EnemyShip : Enemy {
         bulletEmitTimer += Time.deltaTime;
         if (bulletEmitTimer > bulletDelay) {
           Bullet bullet = Instantiate(this.bullet);
+          SfxManager.instance.PlaySound(SoundType.SEAHORSE_SHOT);
           bullet.owner = this.type;
           bullet.transform.position = bulletPos.position;
           bullet.angleOffset = 180;

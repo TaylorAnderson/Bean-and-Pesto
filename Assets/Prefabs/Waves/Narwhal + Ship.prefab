@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2378043067876904783}
   - component: {fileID: 209441050555877731}
   m_Layer: 0
-  m_Name: Narwhal
+  m_Name: Narwhal + Ship
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   wave: 0
+  finished: 0
 --- !u!1001 &3097340690982916229
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -142,12 +143,12 @@ PrefabInstance:
     - target: {fileID: 7765125789731645110, guid: a4147a0a391bd74459d0988576627c7a,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 13.103452
+      value: 9.92
       objectReference: {fileID: 0}
     - target: {fileID: 7765125789731645110, guid: a4147a0a391bd74459d0988576627c7a,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.3125
+      value: 7.88
       objectReference: {fileID: 0}
     - target: {fileID: 7765125789731645110, guid: a4147a0a391bd74459d0988576627c7a,
         type: 3}

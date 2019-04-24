@@ -18,6 +18,7 @@ public class SimpleMenu : MonoBehaviour {
   // Update is called once per frame
   void Update() {
     if (input.Select.WasPressed) {
+      SfxManager.instance.PlaySound(SoundType.SELECT);
       SceneManager.LoadSceneAsync(1);
     }
   }
