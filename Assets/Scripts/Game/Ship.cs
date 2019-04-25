@@ -264,7 +264,7 @@ public class Ship : Entity {
       GameManager.instance.ClearCombo();
       StartCoroutine(GameManager.instance.PauseForSeconds(pauseTime, () => {
         if (bullet != null) bullet.Die();
-        Signals.Get<HitByBulletSignal>().Dispatch(this.type, bullet.owner, energy <= 0);
+        Signals.Get<HitByBulletSignal>().Dispatch(new AttackData(this.type, bullet.owner, energy <= 0));
         Camera.main.Shake(1f);
       }));
     }
@@ -275,7 +275,7 @@ public class Ship : Entity {
       Camera.main.GetComponentInChildren<HurtBG>().Show();
       StartCoroutine(GameManager.instance.PauseForSeconds(bullet.power / 10, () => {
         if (bullet != null) bullet.Die();
-        Signals.Get<HitByBulletSignal>().Dispatch(this.type, bullet.owner, energy <= 0);
+        Signals.Get<HitByBulletSignal>().Dispatch(new AttackData(this.type, bullet.owner, energy <= 0));
         Camera.main.Shake(1.3f);
       }));
       GameManager.instance.AddScore(-1000, transform.position);

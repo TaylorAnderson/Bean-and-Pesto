@@ -79,7 +79,7 @@ public class Enemy : Actor {
         bullet.power -= tempHealth;
       }
 
-      Signals.Get<HitByBulletSignal>().Dispatch(this.type, bullet.owner, this != null && this.health <= 0);
+      Signals.Get<HitByBulletSignal>().Dispatch(new AttackData(this.type, bullet.owner, this != null && this.health <= 0));
 
       if (bullet != null && bullet.power <= 0) {
         bullet.Die();
