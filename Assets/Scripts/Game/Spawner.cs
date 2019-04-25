@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-
+using deVoid.Utils;
 public enum Side {
   RIGHT,
   BOTTOM,
@@ -35,6 +35,7 @@ public class Spawner : MonoBehaviour {
     indicatorCopy.gameObject.SetActive(false);
     indicatorCopy.GetComponent<RectTransform>().SetParent(GameObject.Find("Canvas").transform);
     indicatorCopy.Init(this.enemy, this.side, offset);
+    Signals.Get<SpawningSignal>().Dispatch(enemy.GetComponent<Enemy>().type);
   }
 
   //called by wave manager
@@ -54,11 +55,15 @@ public class Spawner : MonoBehaviour {
       enemyCopy.transform.position = new Vector3(worldSpawnPoint.x, worldSpawnPoint.y, 1);
       enemyCopy.Spawn(this.side);
 
-      if (enemy.name != "Narwhal") { //hack alert
+      if (enemy.GetComponent<Enemy>().type != EntityType.NARWHAL) { //hack alert
         enemyCopy.hasShield = this.hasShield;
         enemyCopy.shieldColor = this.shieldColor;
         enemyCopy.shieldHealth = this.shieldHealth;
       }
+
+      
+
+      
 
       spawned = true;
       Destroy(indicatorCopy.gameObject);

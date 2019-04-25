@@ -11,9 +11,12 @@ public class Wave : MonoBehaviour {
   private float lifetime = 8;
 
   public bool finished = false;
+
+  private bool infinite;
   // Start is called before the first frame update
   void Start() {
     Init();
+    infinite = lifetime == -1;
   }
 
   public void Init() {
@@ -30,7 +33,7 @@ public class Wave : MonoBehaviour {
   // Update is called once per frame
   void Update() {
     this.lifetime -= Time.deltaTime;
-    this.finished = this.lifetime <= 0;
+    this.finished = this.lifetime <= 0 && !infinite;
   }
   public void SetSpawnersActive() {
     for (int i = 0; i < spawners.Count; i++) {
