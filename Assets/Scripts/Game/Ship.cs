@@ -25,9 +25,12 @@ public class Ship : Entity {
   public EnergyBar energyBar;
   public float energy = 100;
 
+
   public SwapFX swapFX;
 
   public GameObject reviveFX;
+
+  public GameObject explosion;
 
   protected Vector2 velocity = new Vector2();
   protected float bulletSpeed = 0.5f;
@@ -189,6 +192,14 @@ public class Ship : Entity {
       this.energyBar.gameObject.SetActive(false);
 
       if (this.otherShip.disabled) {
+        Instantiate(explosion, transform.position, Quaternion.identity);
+        Instantiate(explosion, otherShip.transform.position, Quaternion.identity);
+        this.gameObject.SetActive(false);
+        this.otherShip.gameObject.SetActive(false);
+        SfxManager.instance.PlaySound(SoundType.EXPLOSION);
+
+
+
         GameManager.instance.EndGame();
       }
       else if (otherShip.energy < 199) {
@@ -262,8 +273,8 @@ public class Ship : Entity {
       DisplayUtil.FlashWhite(this, this.shipSprite, pauseTime);
       DisplayUtil.FlashWhite(this, this.characterSprite, pauseTime);
       GameManager.instance.ClearCombo();
+      if (bullet != null) bullet.Die();
       StartCoroutine(GameManager.instance.PauseForSeconds(pauseTime, () => {
-        if (bullet != null) bullet.Die();
         Signals.Get<HitByBulletSignal>().Dispatch(new AttackData(this.type, bullet.owner, energy <= 0));
         Camera.main.Shake(1f);
       }));
@@ -273,8 +284,8 @@ public class Ship : Entity {
       SfxManager.instance.PlaySound(SoundType.SHIP_HURT_AFTER_DEAD);
       invincible = true;
       Camera.main.GetComponentInChildren<HurtBG>().Show();
+      if (bullet != null) bullet.Die();
       StartCoroutine(GameManager.instance.PauseForSeconds(bullet.power / 10, () => {
-        if (bullet != null) bullet.Die();
         Signals.Get<HitByBulletSignal>().Dispatch(new AttackData(this.type, bullet.owner, energy <= 0));
         Camera.main.Shake(1.3f);
       }));
@@ -306,7 +317,6 @@ public class Ship : Entity {
 
       SfxManager.instance.PlaySound(randomVal < 0.33f ? SoundType.ENERGY_COLLECTED_1 : randomVal < 0.66 ? SoundType.ENERGY_COLLECTED_2 : SoundType.ENERGY_COLLECTED_3);
       Destroy(energyDrop.gameObject);
-      Debug.Log("getting energy");
       this.energy += 5;
     }
   }

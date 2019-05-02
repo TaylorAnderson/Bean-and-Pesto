@@ -98,7 +98,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 938bec30884f3dc4a9fee4515682f79d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 7
+  type: 8
   shieldColor: 9533183
   hasShield: 1
   shieldHealth: 3
@@ -108,13 +108,9 @@ MonoBehaviour:
     type: 3}
   energyDrop: {fileID: 2390973025715481367, guid: 85f39ff9f9f859841aa9d63013f74dbb,
     type: 3}
-  audioSource: {fileID: 7514820509321793839}
   maxEnergyDrops: 12
   minEnergyDrops: 5
-  shootSound: {fileID: 0}
-  shieldDieSound: {fileID: 8300000, guid: 31cb8762f504dbb4ebc05d8a5d7a2439, type: 3}
-  hitSound: {fileID: 8300000, guid: d1b0bf7d00b11414186fa31e167af615, type: 3}
-  altExplosionSound: {fileID: 0}
+  playHitSound: 1
   score: 500
   bullet: {fileID: 169795675517444675, guid: 4e1790f968924814698e8bcb79e3ab06, type: 3}
   particle: {fileID: 3082721478967951269}

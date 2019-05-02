@@ -26,8 +26,8 @@ public class Narwhal : Enemy {
 
   }
   // Update is called once per frame
-  override public void Update() {
-    base.Update();
+  override public void DoUpdate() {
+    base.DoUpdate();
     startDelay -= Time.deltaTime;
     this.sprite.color = Color.white;
     if (startDelay <= 0) {

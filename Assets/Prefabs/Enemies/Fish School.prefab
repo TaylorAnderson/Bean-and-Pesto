@@ -57,13 +57,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79d53462a3dcefb45b662db7059aab56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 8
+  type: 6
   shieldColor: 0
   hasShield: 0
   shieldHealth: 5
   health: 6
   sprite: {fileID: 0}
   explosion: {fileID: 0}
+  energyDrop: {fileID: 0}
+  maxEnergyDrops: 3
+  minEnergyDrops: 6
+  playHitSound: 1
+  score: 100
   leftmost: 1000
   rightmost: -1000
   waveWidth: 4

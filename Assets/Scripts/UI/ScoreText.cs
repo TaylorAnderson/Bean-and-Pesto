@@ -16,7 +16,7 @@ public class ScoreText : MonoBehaviour {
     if (this.currentScore != score) {
       this.scoreText.transform.localScale = Vector2.Lerp(this.scoreText.transform.localScale, Vector2.one * 1.5f, 0.2f);
 
-      var scoreDiff = Mathf.Min(Mathf.Abs(this.score - this.currentScore), 5);
+      var scoreDiff = Mathf.Min(Mathf.Abs(this.score - this.currentScore), 50);
       this.currentScore += this.currentScore < score ? scoreDiff : -scoreDiff;
     }
     else {

@@ -9,17 +9,22 @@ public enum Side {
   TOP,
 }
 public class Spawner : MonoBehaviour {
-  private float offset;
+
   public Entity enemy;
   public float delay;
   public Side side;
   public IndicatorUI indicator;
+
   private IndicatorUI indicatorCopy;
   private float timer;
+  private float offset;
+
   [HideInInspector]
   public bool active = false;
   [HideInInspector]
   public bool spawned = false;
+  [HideInInspector]
+  public EntityType enemyType;
 
   public bool hasShield = false;
   public ShieldColors shieldColor = ShieldColors.BEAN;
@@ -27,6 +32,7 @@ public class Spawner : MonoBehaviour {
 
   [HideInInspector] public Wave wave;
   void Start() {
+    this.enemyType = enemy.type;
     this.timer = this.delay + 1.5f; //allow time for indicator
     this.indicatorCopy = Instantiate(indicator.gameObject).GetComponent<IndicatorUI>();
     if (this.side == Side.BOTTOM || this.side == Side.TOP) offset = this.transform.position.x;
@@ -61,13 +67,9 @@ public class Spawner : MonoBehaviour {
         enemyCopy.shieldHealth = this.shieldHealth;
       }
 
-      
-
-      
-
       spawned = true;
+      this.active = false;
       Destroy(indicatorCopy.gameObject);
-      Destroy(this.gameObject);
     }
   }
   public void DrawGizmo(int wave) {
@@ -78,23 +80,25 @@ public class Spawner : MonoBehaviour {
     Handles.Label(transform.position + Vector3.up * 1f + Vector3.left * 0.25f, "Delay: " + this.delay.ToString() + "s\n" + "Wave: " + wave.ToString(), style);
 
     if (enemy.gameObject != null) {
-      if (enemy.gameObject.name == "Enemy Ship") {
-        Gizmos.DrawIcon(transform.position, "helmet-icon.png", true);
-      }
-      if (enemy.gameObject.name == "Shark") {
-        Gizmos.DrawIcon(transform.position, "shark-icon.png", true);
-      }
-      if (enemy.gameObject.name == "JellyFish") {
-        Gizmos.DrawIcon(transform.position, "jelly-icon.png", true);
-      }
-      if (enemy.gameObject.name == "Fish School") {
-        Gizmos.DrawIcon(transform.position, "fish-icon.png", true);
-      }
-      if (enemy.gameObject.name == "PufferFish") {
-        Gizmos.DrawIcon(transform.position, "pufferfish-icon.png", true);
-      }
-      if (enemy.gameObject.name == "Narwhal") {
-        Gizmos.DrawIcon(transform.position, "narwhal-icon.png", true);
+      switch (enemyType) {
+        case EntityType.SHIP:
+          Gizmos.DrawIcon(transform.position, "helmet-icon.png", true);
+          break;
+        case EntityType.SHARK:
+          Gizmos.DrawIcon(transform.position, "shark-icon.png", true);
+          break;
+        case EntityType.JELLY:
+          Gizmos.DrawIcon(transform.position, "jelly-icon.png", true);
+          break;
+        case EntityType.FISH_SCHOOL:
+          Gizmos.DrawIcon(transform.position, "fish-icon.png", true);
+          break;
+        case EntityType.PUFFER:
+          Gizmos.DrawIcon(transform.position, "pufferfish-icon.png", true);
+          break;
+        case EntityType.NARWHAL:
+          Gizmos.DrawIcon(transform.position, "narwhal-icon.png", true);
+          break;
       }
     }
 #endif

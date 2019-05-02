@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using deVoid.Utils;
-
+using UnityEngine.SceneManagement;
 public enum SoundType {
+  NONE,
   BEAN_SHOOT,
   BEAN_CHARGE,
   PESTO_SHOOT,
@@ -35,7 +36,9 @@ public enum SoundType {
   SHARK_2,
 
   SELECT,
-  GAME_MUSIC
+  GAME_MUSIC,
+  INTRO_MUSIC,
+  GAME_OVER_MUSIC
 }
 
 [System.Serializable]
@@ -95,8 +98,13 @@ public class SfxManager : MonoBehaviour {
   public void Update() {
   }
 
+  public static int PlaySoundStatic(SoundType soundType, float volume = 1, bool looping = false) {
+    return SfxManager.instance.PlaySound(soundType, volume, looping);
+  }
+
   public int PlaySound(SoundType soundType, float volume = 1, bool looping = false) {
 
+    if (soundType == SoundType.NONE) return -1;
     if (!looping) {
       var sameSoundsPlaying = 0;
       for (int i = 0; i < this.currentlyPlayingSounds.Count; i++) {
@@ -125,9 +133,22 @@ public class SfxManager : MonoBehaviour {
     return playerIndex;
 
   }
+
+  /**
+  If playerToken provided is -1, it will return the first player in the pool playing that sound.
+   */
   public void StopLoopingSound(SoundType soundType, int playerToken) {
-    if (playerToken < 0 || playerToken > this.currentlyLoopingSounds.Count - 1) {
+
+    if (playerToken > this.currentlyLoopingSounds.Count - 1) {
       return;
+    }
+    if (playerToken == -1) {
+      for (int i = 0; i < players.Count; i++) {
+        if (players[i].player.clip == soundDictionary[soundType]) {
+          playerToken = i;
+        }
+      }
+      if (playerToken == -1) return;
     }
     if (this.players[playerToken] != null && currentlyLoopingSounds.IndexOf(playerToken) >= 0) {
       this.currentlyLoopingSounds.Remove(playerToken);
@@ -140,6 +161,11 @@ public class SfxManager : MonoBehaviour {
 
   }
 
+  public void StopAllSounds() {
+    for (int i = 0; i < this.players.Count; i++) {
+      players[i].player.Stop();
+    }
+  }
   private int GetAvailablePlayer() {
     for (int i = 0; i < this.players.Count; i++) {
       if (!this.players[i].inUse) {

@@ -3,15 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class MathUtil {
-  // Start is called before the first frame update
-  void Start() {
-
-  }
-
-  // Update is called once per frame
-  void Update() {
-
-  }
 
   public static float Map(float x, float fromMin, float fromMax, float toMin, float toMax) {
     return toMin + ((x - fromMin) / (fromMax - fromMin)) * (toMax - toMin);

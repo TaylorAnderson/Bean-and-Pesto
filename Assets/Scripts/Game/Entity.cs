@@ -8,6 +8,7 @@ public enum EntityType {
   SHARK,
   JELLY,
   FISH,
+  FISH_SCHOOL,
   PUFFER,
   NARWHAL,
   UNASSIGNED
@@ -17,7 +18,7 @@ public class Entity : MonoBehaviour {
   public virtual void Start() {
   }
   public virtual void Update() {
-    if (!GameManager.instance.paused) {
+    if (!GameManager.instance.paused && !GameManager.instance.gameEnded) {
       DoUpdate();
     }
   }

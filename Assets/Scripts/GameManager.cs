@@ -17,11 +17,14 @@ public class Data {
 }
 public class GameManager : MonoBehaviour {
   public static GameManager instance;
-  public int wave = 0;
+
   public bool paused = false;
+  public bool gameEnded = false;
   public int combo = 1;
   public int score = 0;
   public int bestScore = 0;
+
+
 
   private float comboKillTime = 10;
   private float comboKillTimer = 10;
@@ -31,34 +34,11 @@ public class GameManager : MonoBehaviour {
   [SerializeField] protected GameObject scorePop;
   [SerializeField] protected GameObject scorePopNegative;
   [SerializeField] protected Canvas canvas;
-  private List<Enemy> currentEnemiesInWave = new List<Enemy>();
-  private List<Wave> waves = new List<Wave>();
+  [SerializeField] protected GameObject gameOverBundle;
+
   public EndPauseSignal endPauseSignal;
 
-  private bool switchingWaves = false;
 
-  private bool isEndless = true;
-
-  public GameObject[] waveObjects;
-
-  private Wave _currentWave = null;
-
-  public Wave CurrentWave {
-    get {
-      if (!isEndless) {
-        for (int i = 0; i < waves.Count; i++) {
-          if (waves[i].wave == this.wave) {
-            return waves[i];
-          }
-        }
-        return null;
-      }
-      else {
-        return _currentWave;
-      }
-
-    }
-  }
 
   void Awake() {
     QualitySettings.vSyncCount = 0;
@@ -80,11 +60,9 @@ public class GameManager : MonoBehaviour {
         score = 0;
       }
     };
-
-    if (isEndless) {
-      StartCoroutine(StartWave());
-    }
   }
+
+
 
   // Update is called once per frame
   void Update() {
@@ -97,10 +75,7 @@ public class GameManager : MonoBehaviour {
       }
     }
 
-    if (this.CurrentWave && this.CurrentWave.finished && !switchingWaves) {
-      this.StartCoroutine(StartWave());
-      switchingWaves = true;
-    }
+
 
   }
 
@@ -115,22 +90,7 @@ public class GameManager : MonoBehaviour {
     this.paused = false;
   }
 
-  public void RegisterEnemy(Enemy enemy) {
-    this.currentEnemiesInWave.Add(enemy);
-  }
 
-  public void DeregisterEnemy(Enemy enemy) {
-    this.currentEnemiesInWave.Remove(enemy);
-
-
-    if (this.currentEnemiesInWave.Count == 0) {
-      if (CurrentWave && CurrentWave.AllEnemiesSpawned()) this.CurrentWave.finished = true;
-    }
-  }
-
-  public void RegisterWave(Wave wave) {
-    waves.Add(wave);
-  }
   public void AddScore(int score, Vector3 position) {
 
     this.score += score < 0 ? score : score * this.combo;
@@ -158,36 +118,9 @@ public class GameManager : MonoBehaviour {
     comboText.SetCombo(combo);
   }
 
-  IEnumerator StartWave() {
-    yield return new WaitForSeconds(0.5f);
 
-    this.wave++;
-    if (this.wave > this.waves.Count - 1 && !this.isEndless) {
-      EndGame();
-    }
-    else {
 
-      if (isEndless) {
-        var wave = GenerateWave();
-        if (wave) {
-          wave.Init();
-          this._currentWave = wave;
-          wave.SetSpawnersActive();
-          this.switchingWaves = false;
-        }
 
-      }
-      else {
-        CurrentWave.SetSpawnersActive();
-      }
-
-    }
-  }
-
-  public Wave GenerateWave() {
-    if (this.waveObjects.Length == 0) return null;
-    return Instantiate(this.waveObjects[UnityEngine.Random.Range(0, this.waveObjects.Length - 1)]).GetComponent<Wave>();
-  }
 
   public void Save(int score) {
     string path = Application.persistentDataPath + "/";
@@ -209,9 +142,10 @@ public class GameManager : MonoBehaviour {
 
   public void EndGame() {
 
+    SfxManager.instance.StopLoopingSound(SoundType.GAME_MUSIC, -1);
+
     var data = Load();
-    print(data.score);
-    print(this.score);
+
     if (data == null || this.score > data.score) {
       bestScore = score;
       Save(score);
@@ -219,7 +153,15 @@ public class GameManager : MonoBehaviour {
     else {
       bestScore = data.score;
     }
+    GameManager.instance.gameEnded = true;
 
-    SceneManager.LoadSceneAsync(2);
+    StartCoroutine(StartGameOverAfterDelay(1));
+  }
+
+  public IEnumerator StartGameOverAfterDelay(float delay) {
+    yield return new WaitForSeconds(delay);
+    SfxManager.instance.StopAllSounds();
+    gameOverBundle.SetActive(true);
+
   }
 }

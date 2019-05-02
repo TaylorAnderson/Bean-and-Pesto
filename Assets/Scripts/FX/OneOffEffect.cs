@@ -5,14 +5,19 @@ using PowerTools;
 /// Plays an animation and then destroys itself
 [RequireComponent(typeof(SpriteAnim))]
 public class OneOffEffect : MonoBehaviour {
-  SpriteAnim m_spriteAnim = null;
+  public SpriteAnim m_spriteAnim = null;
+
+  public SoundType soundToPlay;
+  public float volume = 1;
+
+
 
   // Use this for initialization
   void Start() {
-    // Store the sprite animation component so we don't have to get it again every frame
     m_spriteAnim = GetComponent<SpriteAnim>();
     GetComponent<Animator>().updateMode = AnimatorUpdateMode.UnscaledTime;
 
+    SfxManager.instance.PlaySound(soundToPlay, volume);
 
   }
 

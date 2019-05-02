@@ -10,11 +10,10 @@ public struct AttackData {
   public EntityType victim;
   public EntityType attacker;
   public bool entityKilled;
-  public AttackData(EntityType victim, EntityType attacker, bool entityKilled)
-  {
-      this.victim = victim;
-      this.attacker = attacker;
-      this.entityKilled = entityKilled;
+  public AttackData(EntityType victim, EntityType attacker, bool entityKilled) {
+    this.victim = victim;
+    this.attacker = attacker;
+    this.entityKilled = entityKilled;
   }
 }
 
@@ -33,9 +32,9 @@ public class PestoShip : Ship {
   private float bulletInterval = 0.06f;
   private float bulletCounter = 0;
 
-//i want to pick a conditional out of a list, and have a response mapped to that
-  private List<Func<AttackData, PestoDialogue>> attackResponses  =  new List<Func<AttackData, PestoDialogue>>();
-  private List<Func<EntityType, PestoDialogue>> spawnResponses   =   new List<Func<EntityType, PestoDialogue>>();
+  //i want to pick a conditional out of a list, and have a response mapped to that
+  private List<Func<AttackData, PestoDialogue>> attackResponses = new List<Func<AttackData, PestoDialogue>>();
+  private List<Func<EntityType, PestoDialogue>> spawnResponses = new List<Func<EntityType, PestoDialogue>>();
 
   override public void Start() {
     base.Start();
@@ -44,19 +43,19 @@ public class PestoShip : Ship {
     Signals.Get<HitByBulletSignal>().AddListener(OnBulletHit);
     Signals.Get<SpawningSignal>().AddListener(OnEnemySpawn);
 
-    attackResponses.Add((AttackData data) => {
+    /* attackResponses.Add((AttackData data) => {
       return new PestoDialogue("<j=crazy>See you later, fucko!!!", PestoEmote.ANGRY);
     });
 
     spawnResponses.Add((EntityType entitySpawning) => {
       return new PestoDialogue("We got company!!!", PestoEmote.SCARED);
-    });
+    });*/
   }
 
   void OnBulletHit(AttackData attackData) {
     bool giveResponse = Random.value > 0.9f;
     if (giveResponse == true) {
-      foreach (Func<AttackData, PestoDialogue> func in attackResponses)  {
+      foreach (Func<AttackData, PestoDialogue> func in attackResponses) {
         PestoDialogue dialogue = func(attackData);
         if (dialogue.dialogue != "") {
           Signals.Get<ShowDialogueMessageSignal>().Dispatch(dialogue.dialogue, dialogue.pestoEmote, true);
@@ -70,7 +69,7 @@ public class PestoShip : Ship {
   void OnEnemySpawn(EntityType enemySpawning) {
     bool giveResponse = Random.value > 0.9f;
     if (giveResponse == true) {
-      foreach (Func<EntityType, PestoDialogue> func in spawnResponses)  {
+      foreach (Func<EntityType, PestoDialogue> func in spawnResponses) {
         PestoDialogue dialogue = func(enemySpawning);
         if (dialogue.dialogue != "") {
           Signals.Get<ShowDialogueMessageSignal>().Dispatch(dialogue.dialogue, dialogue.pestoEmote, true);

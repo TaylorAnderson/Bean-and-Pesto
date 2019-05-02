@@ -24,7 +24,7 @@ public class Enemy : Actor {
   public override void Start() {
     base.Start();
 
-    GameManager.instance.RegisterEnemy(this);
+    SpawnManager.instance.RegisterEnemy(this);
     outline = this.sprite.GetComponent<SpriteOutline>();
     outline.size = 3;
     outline.enabled = hasShield;
@@ -140,6 +140,6 @@ public class Enemy : Actor {
   }
 
   public virtual void OnDestroy() {
-    GameManager.instance.DeregisterEnemy(this);
+    SpawnManager.instance.DeregisterEnemy(this);
   }
 }

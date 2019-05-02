@@ -36,6 +36,13 @@ public class DialogueBox : MonoBehaviour {
   private List<PestoMessage> messages = new List<PestoMessage>();
   private bool currentlyReading = false;
   private float startDelay = 0;
+  private bool queuedIntro = false;
+  private List<string> escapeMessages = new List<string> {
+    "<j=crazy> YEEESS!!! FREEDOM IS OURS!!!",
+    "<j=crazy> SEE YOU LATER, JERKS!!!",
+    "<j=crazy> I TOLD YOU THAT WOULD WORK!!! LET'S GET OUTTA HERE!!!",
+
+  };
   // Start is called before the first frame update
   void Start() {
     Signals.Get<ShowDialogueMessageSignal>().AddListener(QueueMessage);
@@ -43,17 +50,19 @@ public class DialogueBox : MonoBehaviour {
     foreach (PestoSprite sprite in pestoSprites) {
       pestoSpriteDict[sprite.emote] = sprite.sprite;
     }
-
-
-    StartCoroutine(QueueTest());
-
   }
 
-  IEnumerator QueueTest() {
+  public void OnEnable() {
+    if (queuedIntro) return;
+    queuedIntro = true;
+    StartCoroutine(QueueIntro());
+  }
+
+  IEnumerator QueueIntro() {
     yield return new WaitForSeconds(0.1f);
+    string msg = escapeMessages[Random.Range(0, escapeMessages.Count - 1)];
+    QueueMessage(msg, PestoEmote.ANGRY, true);
     textMesh.OnCompleteEvent += () => { StartCoroutine(StopReading()); };
-    QueueMessage("Uh oh Bean, looks like we've got some company!", PestoEmote.SCARED);
-    QueueMessage("<j=crazy>LET'S KILL EM!!!</j>", PestoEmote.ANGRY);
   }
 
   IEnumerator StopReading() {

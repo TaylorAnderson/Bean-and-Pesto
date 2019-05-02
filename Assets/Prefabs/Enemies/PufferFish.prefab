@@ -403,7 +403,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0652ce9a2972ee3438c42709668440f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 6
+  type: 7
   shieldColor: 0
   hasShield: 0
   shieldHealth: 5
@@ -413,13 +413,9 @@ MonoBehaviour:
     type: 3}
   energyDrop: {fileID: 2390973025715481367, guid: 85f39ff9f9f859841aa9d63013f74dbb,
     type: 3}
-  audioSource: {fileID: 8730295215162777396}
   maxEnergyDrops: 15
   minEnergyDrops: 6
-  shootSound: {fileID: 0}
-  shieldDieSound: {fileID: 8300000, guid: 31cb8762f504dbb4ebc05d8a5d7a2439, type: 3}
-  hitSound: {fileID: 8300000, guid: d1b0bf7d00b11414186fa31e167af615, type: 3}
-  altExplosionSound: {fileID: 0}
+  playHitSound: 1
   score: 500
   spike: {fileID: 1552652742477691551, guid: dffcdd9f38c10f14bb575b474993309b, type: 3}
   body: {fileID: 7932165712057261348}

@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   wave: 2
+  finished: 0
 --- !u!1001 &1450123064470325732
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -61,7 +62,7 @@ PrefabInstance:
     - target: {fileID: 7765125789731645110, guid: a4147a0a391bd74459d0988576627c7a,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 12.125
+      value: 2.125
       objectReference: {fileID: 0}
     - target: {fileID: 7765125789731645110, guid: a4147a0a391bd74459d0988576627c7a,
         type: 3}

@@ -102,9 +102,9 @@ MonoBehaviour:
   energy: 100
   swapFX: {fileID: 8531725282154944428}
   reviveFX: {fileID: 631286529093427894, guid: 5e58533a67212154f81d5b277f15d0c0, type: 3}
-  swapSound: {fileID: 8300000, guid: 2aeb77eb8c852a848b715e1de21b2f44, type: 3}
-  shootSound: {fileID: 8300000, guid: 91a69af43cb904543bb76a3ca9e49780, type: 3}
-  audioSource: {fileID: 3508350707235611312}
+  explosion: {fileID: 3224949764335432955, guid: 2c93087bd3467ea44823b5bcde03f28d,
+    type: 3}
+  disabled: 0
   particle: {fileID: 237881882}
 --- !u!82 &3508350707235611312
 AudioSource:
